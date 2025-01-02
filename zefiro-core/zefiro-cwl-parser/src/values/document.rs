@@ -1,5 +1,5 @@
 use crate::values::types::CwlValueType;
-use anyhow::Result;
+use anyhow::{Error, Result};
 use serde::{Deserialize, Serialize};
 use serde_yaml;
 use std::{
@@ -28,12 +28,17 @@ impl Deref for CwlValues {
 }
 
 impl CwlValues {
-    pub fn from_path(path: &str) -> Result<Self> {
-        let reader = BufReader::new(File::open(path)?);
-        Ok(serde_yaml::from_reader(reader)?)
+    pub fn from_path(path: &str) -> Result<Self, Error> {
+        let reader = BufReader::new(File::open(path).map_err(|e| {
+            Error::msg(format!("Failed to open file '{}': {}", path, e))
+        })?);
+        
+        serde_yaml::from_reader(reader).map_err(|e| {
+            Error::msg(format!("Failed to parse CWL values from '{}'; {}", path, e))
+        })
     }
 
-    pub fn to_string(&self) -> Result<String> {
+    pub fn to_string(&self) -> Result<String, Error> {
         Ok(serde_yaml::to_string(self)?)
     }
 

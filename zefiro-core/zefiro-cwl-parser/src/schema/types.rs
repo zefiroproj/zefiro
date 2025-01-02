@@ -10,20 +10,17 @@ pub enum Any {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged, rename_all = "camelCase")]
+#[serde(untagged)]
 pub enum CwlSchemaType {
-    Null,
-    Boolean(bool),
-    Int(i32),
-    Long(i64),
-    Float(f32),
-    Double(f64),
-    String(String),
-    File(String),
-    Directory(String),
+    // Here can be any type:
+    // Null, Boolean, Int, Long, Float, Double, String, File, Directory
+    // array, string[], File[], Directory[]
+    Any(String),
+    
+    Array(Vec<Self>),
     Map(HashMap<String, Self>),
-    Array(Vec<Self>)
 }
+
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged, rename_all = "camelCase")]

@@ -6,6 +6,6 @@ edition = "2021"
 [workspace]
 members = [
     "zefiro-cli",
-    "zefiro-core",
+    "zefiro-core/zefiro-cwl-parser",
     "zefiro-ui"
 ]

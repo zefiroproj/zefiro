@@ -1,23 +1,14 @@
 use serde::{Deserialize, Serialize};
-use serde_with::skip_serializing_none;
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(untagged)]
-pub enum CwlInputClass {
-    File(String),
-    Directory(String),
-}
 
 /// Represents a `File` object in CWL
 /// see: https://www.commonwl.org/v1.2/CommandLineTool.html#File
-#[skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CwlFile {
-    pub class: CwlInputClass,
+pub struct File {
+    pub class: String,
     pub location: String,
 }
 
-impl CwlFile {
+impl File {
     pub fn get_location(&self) -> String {
         self.location.clone()
     }
@@ -25,14 +16,13 @@ impl CwlFile {
 
 /// Represents a `Directory` object in CWL
 /// see: https://www.commonwl.org/v1.2/CommandLineTool.html#Directory
-#[skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct CwlDirectory {
-    pub class: CwlInputClass,
+pub struct Directory {
+    pub class: String,
     pub location: String,
 }
 
-impl CwlDirectory {
+impl Directory {
     pub fn get_location(&self) -> String {
         self.location.clone()
     }
@@ -48,7 +38,7 @@ pub enum CwlValueType {
     Float(f32),
     Double(f64),
     String(String),
-    CwlFile(CwlFile),
-    CwlDirectory(CwlDirectory),
+    File(File),
+    Directory(Directory),
     Array(Vec<Self>)
 }

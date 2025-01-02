@@ -10,12 +10,22 @@ use serde_with::skip_serializing_none;
 #[serde(rename_all = "camelCase")]
 pub struct CommandLineTool {
     pub cwl_version: String,
+
     pub class: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub doc: Option<Documentation>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub label: Option<String>,
+
     pub inputs: Vec<CommandInputParameter>,
+
     pub outputs: Vec<CommandOutputParameter>,
+
     pub requirements: Vec<CommandLineToolRequirement>,
 }
 
