@@ -1,0 +1,11 @@
+[package]
+name = "zefiro"
+version = "0.1.0"
+edition = "2021"
+
+[workspace]
+members = [
+    "zefiro-cli",
+    "zefiro-core",
+    "zefiro-ui"
+]
