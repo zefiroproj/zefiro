@@ -1,0 +1,32 @@
+cwlVersion: v1.2
+class: CommandLineTool
+id: step
+inputs:
+  - id: in_file
+    type: File
+    inputBinding:
+      prefix: --in-file
+  - id: out_file
+    type: string
+    default: "output.txt"
+    inputBinding:
+      prefix: --out-file
+  - id: output_location_subdir
+    type: string
+    default: output/
+outputs:
+  - id: out_file
+    type: File
+    outputBinding:
+      glob: $(inputs.out_file)
+      outputEval: ${self[0].location += inputs.output_location_subdir; return self[0]}
+requirements:
+  - class: DockerRequirement
+    dockerPull: step-image-uri:1.0
+  - class: ResourceRequirement
+    coresMin: 2
+    outdirMin: 1000
+    ramMin: 1024
+  - class: InlineJavascriptRequirement
+  - class: ToolTimeLimit
+    timelimit: $(60*60*1)
