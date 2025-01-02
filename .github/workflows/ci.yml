@@ -32,7 +32,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Check typos
-        uses: crate-ci/typos@master
+        uses: crate-ci/typos@v1.29.0
 
   test:
     name: Test suite
