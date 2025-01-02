@@ -2,10 +2,12 @@
 
 if ! command -v typos &>/dev/null; then
   echo "typos is not installed. Run 'cargo install typos-cli' to install it, otherwise the typos won't be fixed"
+  exit 1
 fi
 
 if ! command -v git-cliff &>/dev/null; then
   echo "git-cliff is not installed. Run 'cargo install git-cliff' to install it, otherwise the CHANGELOG.md won't be updated"
+  exit 1
 fi
 
 if [ -z "$1" ]; then
