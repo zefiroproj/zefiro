@@ -12,12 +12,29 @@ pub enum Any {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum CwlSchemaType {
-    // Here can be any type:
-    // Null, Boolean, Int, Long, Float, Double, String, File, Directory
-    // array, string[], File[], Directory[]
+    /// Represents any value in field `type`
+    /// 
+    /// Example:
+    /// 
+    /// type: boolean
+    /// ...
     Any(String),
     
+    /// Represents an array type
+    ///
+    /// Example:
+    ///
+    /// - null
+    /// - type: array
+    ///   items: File
     Array(Vec<Self>),
+
+    /// Represents a map type
+    ///
+    /// Example:
+    ///
+    /// type: array
+    /// items: string
     Map(HashMap<String, Self>),
 }
 

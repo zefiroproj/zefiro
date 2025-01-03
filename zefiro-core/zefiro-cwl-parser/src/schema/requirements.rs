@@ -43,24 +43,24 @@ pub struct DockerRequirement {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ResourceRequirement {
-    #[serde(default = "ResourceRequirement::default_cores_min")]
+    #[serde(default = "ResourceRequirement::cores_min")]
     pub cores_min: u32,
     
-    #[serde(default = "ResourceRequirement::default_ram_min")]
+    #[serde(default = "ResourceRequirement::ram_min")]
     pub ram_min: u32,
 
-    #[serde(default = "ResourceRequirement::default_tmpdir_min")]
+    #[serde(default = "ResourceRequirement::tmpdir_min")]
     pub tmpdir_min: u32,
 
-    #[serde(default = "ResourceRequirement::default_outdir_min")]
+    #[serde(default = "ResourceRequirement::outdir_min")]
     pub outdir_min: u32,
 }
 
 impl ResourceRequirement {
-    fn default_cores_min() -> u32 { CPU_NUM_DEFAULT }
-    fn default_ram_min() -> u32 { RAM_SIZE_IN_MB_DEFAULT }
-    fn default_tmpdir_min() -> u32 { TMPDIR_MIN_IN_MB_DEFAULT }
-    fn default_outdir_min() -> u32 { OUTDIR_MIN_IN_MB_DEFAULT }
+    fn cores_min() -> u32 { CPU_NUM_DEFAULT }
+    fn ram_min() -> u32 { RAM_SIZE_IN_MB_DEFAULT }
+    fn tmpdir_min() -> u32 { TMPDIR_MIN_IN_MB_DEFAULT }
+    fn outdir_min() -> u32 { OUTDIR_MIN_IN_MB_DEFAULT }
 }
 
 /// Indicates that the workflow platform must support inline Javascript expressions

@@ -36,8 +36,12 @@ pub struct CommandLineTool {
 #[serde(rename_all = "camelCase")]
 pub struct CommandInputParameter {
     pub id: String,
+    
     pub r#type: CwlSchemaType,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub input_binding: Option<CommandLineBinding>,
+
     pub default: Option<Any>,
 }
 
@@ -48,7 +52,10 @@ pub struct CommandInputParameter {
 #[serde(rename_all = "camelCase")]
 pub struct CommandOutputParameter {
     pub id: String,
+
     pub r#type: CwlSchemaType,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub output_binding: Option<OutputBinding>,
 }
 
@@ -58,8 +65,13 @@ pub struct CommandOutputParameter {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CommandLineBinding {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub position: Option<u32>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub value_from: Option<String>,
 }
 
@@ -68,6 +80,9 @@ pub struct CommandLineBinding {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct OutputBinding {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub glob: Option<String>,
+    
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub output_eval: Option<String>,
 }

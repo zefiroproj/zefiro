@@ -1,6 +1,0 @@
-step__in_file:
-{% for readgroup in readgroups %}
-  - class: File
-    location: '{{ inputLocation }}/output/input-{{ readgroup }}.txt'
-{% endfor %}
-step__out_file: output.txt
