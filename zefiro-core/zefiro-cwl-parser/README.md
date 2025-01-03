@@ -4,7 +4,7 @@ A Rust library for parsing and working with Common Workflow Language (CWL) docum
 
 ## Overview
 
-* Supports only some fields of CWL v1.2 specification (see description of stuctures in the code)
+* Supports only some fields of CWL v1.2 specification (see description of structures in the code)
 * Can serialize and deserialize [CommandLineTool](https://www.commonwl.org/v1.2/CommandLineTool.html) and [Workflow](https://www.commonwl.org/v1.2/Workflow.html) documents
 
 ## Usage

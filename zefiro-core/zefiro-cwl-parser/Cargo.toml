@@ -14,6 +14,7 @@ homepage = "https://github.com/zefiroproj/zefiro"
 license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/zefiroproj/zefiro"
+rust-version = "1.83.0"
 
 [dependencies]
 anyhow = "1.0.95"
