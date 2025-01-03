@@ -10,11 +10,6 @@ const SUPPORTED_VERSIONS: &[&str] = &["v1.2"];
 
 
 /// Represents a CWL Schema which can be either a CommandLineTool or a Workflow
-/// 
-/// # Variants
-/// 
-/// * `CommandLineTool` - Represents a single command line tool with its inputs and outputs
-/// * `Workflow` - Represents a series of connected steps forming a complete workflow
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum CwlSchema {
