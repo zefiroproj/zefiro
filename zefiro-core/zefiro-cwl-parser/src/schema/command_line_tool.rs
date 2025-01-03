@@ -1,5 +1,5 @@
-use crate::schema::types::{Any, CwlSchemaType, Documentation};
 use crate::schema::requirements::CommandLineToolRequirement;
+use crate::schema::types::{Any, CwlSchemaType, Documentation};
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 
@@ -36,7 +36,7 @@ pub struct CommandLineTool {
 #[serde(rename_all = "camelCase")]
 pub struct CommandInputParameter {
     pub id: String,
-    
+
     pub r#type: CwlSchemaType,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -82,7 +82,7 @@ pub struct CommandLineBinding {
 pub struct OutputBinding {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub glob: Option<String>,
-    
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub output_eval: Option<String>,
 }

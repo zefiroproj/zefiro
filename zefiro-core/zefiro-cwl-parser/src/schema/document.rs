@@ -3,11 +3,12 @@ use anyhow::{bail, ensure, Error, Result};
 use serde::{Deserialize, Serialize};
 use serde_yaml::{self, Value};
 use std::{
-    fs::File, io::{BufReader, Write}, str::FromStr
+    fs::File,
+    io::{BufReader, Write},
+    str::FromStr,
 };
 
 const SUPPORTED_VERSIONS: &[&str] = &["v1.2"];
-
 
 /// Represents a CWL Schema which can be either a CommandLineTool or a Workflow
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -19,12 +20,12 @@ pub enum CwlSchema {
 
 impl CwlSchema {
     /// Serializes YAML `file` containing CWL values into CwlSchema structure.
-    /// 
+    ///
     /// ```
     /// use zefiro_cwl_parser::schema::document::CwlSchema;
-    /// 
+    ///
     /// let yaml_file = "examples/data/clt-step-schema.yml";
-    /// 
+    ///
     /// let values = CwlSchema::from_path(yaml_file).expect("Failed to deserialize CWL values document");
     /// ```
     pub fn from_path(path: &str) -> Result<Self> {
@@ -35,10 +36,13 @@ impl CwlSchema {
     /// Deserializes a YAML Value into a CwlSchema instance.
     pub fn from_yaml(value: Value) -> Result<Self> {
         let version = value
-        .get("cwlVersion")
+            .get("cwlVersion")
             .and_then(Value::as_str)
             .ok_or_else(|| anyhow::anyhow!("Failed to determine CWL specification version."))?;
-        ensure!(SUPPORTED_VERSIONS.contains(&version), "Unsupported CWL version: {version}");
+        ensure!(
+            SUPPORTED_VERSIONS.contains(&version),
+            "Unsupported CWL version: {version}"
+        );
 
         match value.get("class").and_then(Value::as_str) {
             Some("CommandLineTool") => Ok(Self::CommandLineTool(serde_yaml::from_value(value)?)),
@@ -51,11 +55,11 @@ impl CwlSchema {
     /// Serializes YAML `string` containing CWL values into CwlValues structure.
     ///
     /// # Examples
-    /// 
+    ///
     /// ```
     /// use serde_yaml::Value;
     /// use zefiro_cwl_parser::schema::document::CwlSchema;
-    /// 
+    ///
     /// let yaml_str = r#"
     /// cwlVersion: v1.2
     /// class: CommandLineTool
@@ -88,9 +92,8 @@ impl CwlSchema {
     /// let schema = CwlSchema::from_string(yaml_str).expect("Failed to parse CWL document");
     /// ```
     pub fn from_string(yaml_input: &str) -> Result<Self, Error> {
-        serde_yaml::from_str(yaml_input).map_err(|e| {
-            Error::msg(format!("Failed to parse CWL schema from string: {}", e))
-        })
+        serde_yaml::from_str(yaml_input)
+            .map_err(|e| Error::msg(format!("Failed to parse CWL schema from string: {}", e)))
     }
 
     /// Deserializes CwlValues structure into `string`.

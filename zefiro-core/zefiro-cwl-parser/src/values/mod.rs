@@ -1,2 +1,2 @@
-pub mod types;
 pub mod document;
+pub mod types;

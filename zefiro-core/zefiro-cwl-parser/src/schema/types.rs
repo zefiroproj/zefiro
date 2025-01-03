@@ -13,13 +13,13 @@ pub enum Any {
 #[serde(untagged)]
 pub enum CwlSchemaType {
     /// Represents any value in field `type`
-    /// 
+    ///
     /// Example:
-    /// 
+    ///
     /// type: boolean
     /// ...
     Any(String),
-    
+
     /// Represents an array type
     ///
     /// Example:
@@ -37,7 +37,6 @@ pub enum CwlSchemaType {
     /// items: string
     Map(HashMap<String, Self>),
 }
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged, rename_all = "camelCase")]

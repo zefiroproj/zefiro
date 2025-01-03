@@ -28,7 +28,6 @@ impl Directory {
     }
 }
 
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum CwlValueType {
@@ -40,5 +39,5 @@ pub enum CwlValueType {
     String(String),
     File(File),
     Directory(Directory),
-    Array(Vec<Self>)
+    Array(Vec<Self>),
 }

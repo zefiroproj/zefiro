@@ -7,7 +7,6 @@ const RAM_SIZE_IN_MB_DEFAULT: u32 = 1024;
 const TMPDIR_MIN_IN_MB_DEFAULT: u32 = 1024;
 const OUTDIR_MIN_IN_MB_DEFAULT: u32 = 1024;
 
-
 /// Describes requirements for `Workflow`.
 #[skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -25,7 +24,7 @@ pub enum CommandLineToolRequirement {
     ResourceRequirement(ResourceRequirement),
     InlineJavascriptRequirement(InlineJavascriptRequirement),
     ToolTimeLimit(ToolTimeLimit),
-    WorkReuse(WorkReuse)
+    WorkReuse(WorkReuse),
 }
 
 /// Specifies Docker container requirements.
@@ -45,7 +44,7 @@ pub struct DockerRequirement {
 pub struct ResourceRequirement {
     #[serde(default = "ResourceRequirement::cores_min")]
     pub cores_min: u32,
-    
+
     #[serde(default = "ResourceRequirement::ram_min")]
     pub ram_min: u32,
 
@@ -57,10 +56,18 @@ pub struct ResourceRequirement {
 }
 
 impl ResourceRequirement {
-    fn cores_min() -> u32 { CPU_NUM_DEFAULT }
-    fn ram_min() -> u32 { RAM_SIZE_IN_MB_DEFAULT }
-    fn tmpdir_min() -> u32 { TMPDIR_MIN_IN_MB_DEFAULT }
-    fn outdir_min() -> u32 { OUTDIR_MIN_IN_MB_DEFAULT }
+    fn cores_min() -> u32 {
+        CPU_NUM_DEFAULT
+    }
+    fn ram_min() -> u32 {
+        RAM_SIZE_IN_MB_DEFAULT
+    }
+    fn tmpdir_min() -> u32 {
+        TMPDIR_MIN_IN_MB_DEFAULT
+    }
+    fn outdir_min() -> u32 {
+        OUTDIR_MIN_IN_MB_DEFAULT
+    }
 }
 
 /// Indicates that the workflow platform must support inline Javascript expressions
@@ -82,7 +89,6 @@ pub struct ToolTimeLimit {
 #[skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ScatterFeatureRequirement;
-
 
 /// Specifies a reusing output from past work of a `CommandLineTool`.
 /// See: https://www.commonwl.org/v1.2/CommandLineTool.html#WorkReuse

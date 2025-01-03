@@ -1,6 +1,6 @@
 use crate::schema::command_line_tool::CommandLineTool;
-use crate::schema::types::{Any, Documentation, Scatter, Source, CwlSchemaType};
 use crate::schema::requirements::WorkflowRequirement;
+use crate::schema::types::{Any, CwlSchemaType, Documentation, Scatter, Source};
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 
@@ -18,7 +18,7 @@ pub struct Workflow {
     pub inputs: Vec<WorkflowInputParameter>,
     pub outputs: Vec<WorkflowOutputParameter>,
     pub steps: Vec<WorkflowStep>,
-    pub requirements: Vec<WorkflowRequirement>
+    pub requirements: Vec<WorkflowRequirement>,
 }
 
 /// Represents an input parameter for a `Workflow`.
@@ -43,9 +43,8 @@ pub struct WorkflowOutputParameter {
     pub label: Option<String>,
     pub doc: Option<Documentation>,
     pub id: Option<String>,
-    pub output_source: Option<WorkflowOutputParameterOutputSource>
+    pub output_source: Option<WorkflowOutputParameterOutputSource>,
 }
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged, rename_all = "camelCase")]
@@ -87,5 +86,5 @@ pub struct WorkflowStepInput {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct WorkflowStepOutput {
-    pub id: String
+    pub id: String,
 }
