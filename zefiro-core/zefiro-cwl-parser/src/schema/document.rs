@@ -143,7 +143,8 @@ mod tests {
     #[case("examples/data/clt-step-schema.yml", tempfile::tempfile().unwrap())]
     #[case("examples/data/wf-step-schema.yml", tempfile::tempfile().unwrap())]
     fn test_save_schema_to_yaml(#[case] file_path: &str, #[case] output_path: File) {
-        let schema = CwlSchema::from_path(file_path).expect("Failed to deserialize CWL schema document");
+        let schema =
+            CwlSchema::from_path(file_path).expect("Failed to deserialize CWL schema document");
         let writer = BufWriter::new(output_path);
         let _ = schema.to_yaml(writer);
     }
