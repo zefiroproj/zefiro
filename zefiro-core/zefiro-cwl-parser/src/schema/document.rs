@@ -130,11 +130,21 @@ impl FromStr for CwlSchema {
 mod tests {
     use super::*;
     use rstest::rstest;
+    use std::io::BufWriter;
 
     #[rstest]
     #[case("examples/data/clt-step-schema.yml")]
     #[case("examples/data/wf-step-schema.yml")]
     fn test_parse_correct_schema(#[case] file_path: &str) {
         CwlSchema::from_path(file_path).expect("Failed to deserialize CWL schema document");
+    }
+
+    #[rstest]
+    #[case("examples/data/clt-step-schema.yml", tempfile::tempfile().unwrap())]
+    #[case("examples/data/wf-step-schema.yml", tempfile::tempfile().unwrap())]
+    fn test_save_schema_to_yaml(#[case] file_path: &str, #[case] output_path: File) {
+        let schema = CwlSchema::from_path(file_path).expect("Failed to deserialize CWL schema document");
+        let writer = BufWriter::new(output_path);
+        let _ = schema.to_yaml(writer);
     }
 }

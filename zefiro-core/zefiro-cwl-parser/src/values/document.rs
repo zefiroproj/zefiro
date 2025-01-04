@@ -102,10 +102,19 @@ impl CwlValues {
 mod tests {
     use super::*;
     use rstest::rstest;
+    use std::io::BufWriter;
 
     #[rstest]
     #[case("examples/data/clt-step-values.yml")]
     fn test_parse_correct_values(#[case] file_path: &str) {
         CwlValues::from_path(file_path).expect("Failed to deserialize CWL values document");
+    }
+
+    #[rstest]
+    #[case("examples/data/clt-step-values.yml", tempfile::tempfile().unwrap())]
+    fn test_save_schema_to_yaml(#[case] file_path: &str, #[case] output_path: File) {
+        let schema = CwlValues::from_path(file_path).expect("Failed to deserialize CWL values document");
+        let writer = BufWriter::new(output_path);
+        let _ = schema.to_yaml(writer);
     }
 }
