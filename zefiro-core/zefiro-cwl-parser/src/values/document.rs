@@ -25,7 +25,7 @@ impl Deref for CwlValues {
 }
 
 impl CwlValues {
-    /// Serializes YAML `file` containing CWL values into CwlValues structure.
+    /// Deserializes YAML `file` containing CWL values into CwlValues structure.
     ///
     /// ```
     /// use zefiro_cwl_parser::values::document::CwlValues;
@@ -39,10 +39,10 @@ impl CwlValues {
         );
 
         serde_yaml::from_reader(reader)
-            .map_err(|e| Error::msg(format!("Failed to parse CWL values from '{}'; {}", path, e)))
+            .map_err(|e| Error::msg(format!("Failed to deserialize CWL values from '{}'; {}", path, e)))
     }
 
-    /// Serializes YAML `string` containing CWL values into CwlValues structure.
+    /// Deserializes YAML `string` containing CWL values into CwlValues structure.
     ///
     /// ```
     /// use zefiro_cwl_parser::values::document::CwlValues;
@@ -58,16 +58,16 @@ impl CwlValues {
     /// ```
     pub fn from_string(yaml_input: &str) -> Result<Self, Error> {
         serde_yaml::from_str(yaml_input)
-            .map_err(|e| Error::msg(format!("Failed to parse CWL values from string: {}", e)))
+            .map_err(|e| Error::msg(format!("Failed to deserialize CWL values from string: {}", e)))
     }
 
     /// Deserializes CwlValues structure into `string`.
     pub fn to_string(&self) -> Result<String, Error> {
         serde_yaml::to_string(self)
-            .map_err(|e| Error::msg(format!("Failed to serialize CWL values to string: {}", e)))
+            .map_err(|e| Error::msg(format!("Failed to dserialize CWL values to string: {}", e)))
     }
 
-    /// Deserializes CwlValues structure and writes it into `file`.
+    /// Serializes CwlValues structure and writes it into `file`.
     ///
     /// ```
     /// use zefiro_cwl_parser::values::document::CwlValues;
@@ -80,7 +80,7 @@ impl CwlValues {
     /// out_file: 'output.txt'
     /// "#;
     ///
-    /// let values = CwlValues::from_string(yaml_input).expect("Failed to deserialize CWL values document");
+    /// let values = CwlValues::from_string(yaml_input).expect("Failed to serialize CWL values document");
     /// let mut tmpfile = tempfile::tempfile().unwrap();
     /// let mut writer = BufWriter::new(tmpfile);
     /// values.to_yaml(writer);

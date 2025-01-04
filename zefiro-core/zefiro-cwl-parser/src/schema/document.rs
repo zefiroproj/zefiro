@@ -19,7 +19,7 @@ pub enum CwlSchema {
 }
 
 impl CwlSchema {
-    /// Serializes YAML `file` containing CWL values into CwlSchema structure.
+    /// Deserializes YAML `file` containing CWL values into CwlSchema structure.
     ///
     /// ```
     /// use zefiro_cwl_parser::schema::document::CwlSchema;
@@ -52,7 +52,7 @@ impl CwlSchema {
         }
     }
 
-    /// Serializes YAML `string` containing CWL values into CwlValues structure.
+    /// Deserializes YAML `string` containing CWL values into CwlValues structure.
     ///
     /// # Examples
     ///
@@ -96,12 +96,23 @@ impl CwlSchema {
             .map_err(|e| Error::msg(format!("Failed to parse CWL schema from string: {}", e)))
     }
 
-    /// Deserializes CwlValues structure into `string`.
+    /// Serializes CwlSchema structure into `string`.
     pub fn to_string(&self) -> Result<String> {
         serde_yaml::to_string(self).map_err(Into::into)
     }
 
-    /// Deserializes CwlValues structure and writes it into `file`.
+    /// Serializes CwlSchema structure and writes it into `file`.
+    /// ```
+    /// use zefiro_cwl_parser::schema::document::CwlSchema;
+    /// use std::fs::File;
+    /// use std::io::BufWriter;
+    ///
+    /// let yaml_file = "examples/data/clt-step-schema.yml";
+    /// let schema = CwlSchema::from_path(yaml_file).expect("Failed to serialize CWL schema document");
+    /// let mut tmpfile = tempfile::tempfile().unwrap();
+    /// let mut writer = BufWriter::new(tmpfile);
+    /// schema.to_yaml(writer);
+    /// ```
     pub fn to_yaml<W: Write>(&self, writer: W) -> Result<()> {
         serde_yaml::to_writer(writer, self).map_err(Into::into)
     }
