@@ -1,4 +1,3 @@
-use crate::schema::types::Any;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 
@@ -56,16 +55,16 @@ pub struct ResourceRequirement {
 }
 
 impl ResourceRequirement {
-    fn cores_min() -> u32 {
+    const fn cores_min() -> u32 {
         CPU_NUM_DEFAULT
     }
-    fn ram_min() -> u32 {
+    const fn ram_min() -> u32 {
         RAM_SIZE_IN_MB_DEFAULT
     }
-    fn tmpdir_min() -> u32 {
+    const fn tmpdir_min() -> u32 {
         TMPDIR_MIN_IN_MB_DEFAULT
     }
-    fn outdir_min() -> u32 {
+    const fn outdir_min() -> u32 {
         OUTDIR_MIN_IN_MB_DEFAULT
     }
 }
@@ -81,7 +80,14 @@ pub struct InlineJavascriptRequirement;
 #[skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct ToolTimeLimit {
-    pub timelimit: Any,
+    pub timelimit: Timelimit,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(untagged)]
+pub enum Timelimit {
+    Seconds(u32),
+    Expression(String),
 }
 
 /// Specifies that the workflow platform must support the scatter and `scatterMethod` fields of `WorkflowStep`.

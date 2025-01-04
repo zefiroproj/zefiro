@@ -13,7 +13,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-zefiro-cwl-parser = <zefiro-cwl-parser>
+zefiro-cwl-parser = "0.1.0"
 ```
 
 

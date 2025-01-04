@@ -16,8 +16,7 @@ pub struct CommandLineTool {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub doc: Option<Documentation>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<String>,
+    pub id: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub label: Option<String>,

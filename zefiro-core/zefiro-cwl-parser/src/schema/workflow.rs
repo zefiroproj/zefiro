@@ -81,7 +81,7 @@ pub struct WorkflowStepInput {
     pub value_from: Option<String>,
 }
 
-/// Defines the output parameters of the workflow step (`in` section).
+/// Defines the output parameters of the workflow step (`out` section).
 #[skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]

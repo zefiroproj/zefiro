@@ -23,8 +23,8 @@ pub struct Directory {
 }
 
 impl Directory {
-    pub fn get_location(&self) -> String {
-        self.location.clone()
+    pub fn get_location(&self) -> &str {
+        &self.location
     }
 }
 
