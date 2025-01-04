@@ -35,7 +35,9 @@ impl Serialize for CommandLineTool {
         S: serde::Serializer,
     {
         if !self.has_docker_requirement() {
-            return Err(serde::ser::Error::custom("CommandLineTool must have DockerRequirement"));
+            return Err(serde::ser::Error::custom(
+                "CommandLineTool must have DockerRequirement",
+            ));
         }
         #[derive(Serialize)]
         struct CommandLineToolHelper<'a>(&'a CommandLineTool);
