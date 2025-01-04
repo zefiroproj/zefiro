@@ -7,8 +7,8 @@ description = """
 authors = [
   "Nikita Syzrantsev <syzrantsev.n@gmail.com>"
 ]
-categories = ["Common Workflow Language", "CWL"]
-keywords = ["CWL", "CommanLineTool", "Workflow"]
+categories = ["CWL serialization", "CWL deserialization", "Common Workflow Language"]
+keywords = ["CWL", "CommandLineTool", "Workflow"]
 edition = "2021"
 homepage = "https://github.com/zefiroproj/zefiro"
 license = "Apache-2.0"
