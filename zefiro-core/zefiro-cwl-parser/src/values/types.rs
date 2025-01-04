@@ -1,10 +1,8 @@
 use serde::{Deserialize, Serialize};
 
 /// Represents a `File` object in CWL
-/// see: https://www.commonwl.org/v1.2/CommandLineTool.html#File
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct File {
-    pub class: String,
     pub location: String,
 }
 
@@ -15,10 +13,8 @@ impl File {
 }
 
 /// Represents a `Directory` object in CWL
-/// see: https://www.commonwl.org/v1.2/CommandLineTool.html#Directory
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Directory {
-    pub class: String,
     pub location: String,
 }
 
@@ -29,6 +25,14 @@ impl Directory {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(tag = "class", rename_all = "PascalCase")]
+pub enum Path {
+    File(File),
+    Directory(Directory),
+}
+
+/// CWL value types with tagged enum for `File` and `Directory`
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum CwlValueType {
     Boolean(bool),
@@ -37,7 +41,6 @@ pub enum CwlValueType {
     Float(f32),
     Double(f64),
     String(String),
-    File(File),
-    Directory(Directory),
+    Path(Path),
     Array(Vec<Self>),
 }

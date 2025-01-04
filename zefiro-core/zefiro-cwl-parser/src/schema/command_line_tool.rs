@@ -6,26 +6,41 @@ use serde_with::skip_serializing_none;
 /// This defines the schema of the CWL Command Line Tool Description document.
 /// See: https://www.commonwl.org/v1.2/CommandLineTool.html
 #[skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CommandLineTool {
     pub cwl_version: String,
-
     pub class: String,
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub doc: Option<Documentation>,
-
     pub id: String,
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub label: Option<String>,
-
     pub inputs: Vec<CommandInputParameter>,
-
     pub outputs: Vec<CommandOutputParameter>,
-
     pub requirements: Vec<CommandLineToolRequirement>,
+}
+
+impl CommandLineTool {
+    fn has_docker_requirement(&self) -> bool {
+        self.requirements
+            .iter()
+            .any(|req| matches!(req, CommandLineToolRequirement::DockerRequirement(_)))
+    }
+}
+
+impl Serialize for CommandLineTool {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        if !self.has_docker_requirement() {
+            return Err(serde::ser::Error::custom("CommandLineTool must have DockerRequirement"));
+        }
+        #[derive(Serialize)]
+        struct CommandLineToolHelper<'a>(&'a CommandLineTool);
+        CommandLineToolHelper(self).serialize(serializer)
+    }
 }
 
 /// Represents an input parameter for a `CommandLineTool`.
@@ -74,7 +89,8 @@ pub struct CommandLineBinding {
     pub value_from: Option<String>,
 }
 
-/// Describes output binding rules for a `CommandLineTool`.
+/// Describes how to find and capture output files or values from a CommandLineTool execution.
+/// See: https://www.commonwl.org/v1.2/CommandLineTool.html#CommandOutputBinding
 #[skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]

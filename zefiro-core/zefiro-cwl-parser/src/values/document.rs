@@ -68,6 +68,23 @@ impl CwlValues {
     }
 
     /// Deserializes CwlValues structure and writes it into `file`.
+    ///
+    /// ```
+    /// use zefiro_cwl_parser::values::document::CwlValues;
+    /// use std::io::BufWriter;
+    ///
+    /// let yaml_input = r#"
+    /// in_file:
+    ///     class: File
+    ///     location: 's3://bucket/path/to/input.txt'
+    /// out_file: 'output.txt'
+    /// "#;
+    ///
+    /// let values = CwlValues::from_string(yaml_input).expect("Failed to deserialize CWL values document");
+    /// let mut tmpfile = tempfile::tempfile().unwrap();
+    /// let mut writer = BufWriter::new(tmpfile);
+    /// values.to_yaml(writer);
+    /// ```
     pub fn to_yaml<W: Write>(&self, writer: W) -> Result<()> {
         serde_yaml::to_writer(writer, self).map_err(Into::into)
     }
