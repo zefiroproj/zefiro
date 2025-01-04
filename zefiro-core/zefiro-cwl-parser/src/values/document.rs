@@ -38,8 +38,12 @@ impl CwlValues {
                 .map_err(|e| Error::msg(format!("Failed to open file '{}': {}", path, e)))?,
         );
 
-        serde_yaml::from_reader(reader)
-            .map_err(|e| Error::msg(format!("Failed to deserialize CWL values from '{}'; {}", path, e)))
+        serde_yaml::from_reader(reader).map_err(|e| {
+            Error::msg(format!(
+                "Failed to deserialize CWL values from '{}'; {}",
+                path, e
+            ))
+        })
     }
 
     /// Deserializes YAML `string` containing CWL values into CwlValues structure.
@@ -57,8 +61,12 @@ impl CwlValues {
     /// let values = CwlValues::from_string(yaml_input).expect("Failed to deserialize CWL values document");
     /// ```
     pub fn from_string(yaml_input: &str) -> Result<Self, Error> {
-        serde_yaml::from_str(yaml_input)
-            .map_err(|e| Error::msg(format!("Failed to deserialize CWL values from string: {}", e)))
+        serde_yaml::from_str(yaml_input).map_err(|e| {
+            Error::msg(format!(
+                "Failed to deserialize CWL values from string: {}",
+                e
+            ))
+        })
     }
 
     /// Deserializes CwlValues structure into `string`.
