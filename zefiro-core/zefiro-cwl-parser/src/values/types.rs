@@ -77,19 +77,13 @@ impl<'de> Deserialize<'de> for CwlFile {
         let helper = FileHelper::deserialize(deserializer)?;
         let path = &helper.location;
 
-        let size = CwlFile::size(path, helper.size);
-        let checksum = CwlFile::checksum(path, helper.checksum);
-        let basename = CwlFile::basename(path);
-        let nameroot = CwlFile::nameroot(path);
-        let nameext = CwlFile::nameext(path);
-
         Ok(CwlFile {
-            location: helper.location,
-            basename,
-            nameroot,
-            nameext,
-            size,
-            checksum,
+            location: helper.location.clone(),
+            basename: CwlFile::basename(path),
+            nameroot: CwlFile::nameroot(path),
+            nameext: CwlFile::nameext(path),
+            size: CwlFile::size(path, helper.size),
+            checksum: CwlFile::checksum(path, helper.checksum),
         })
     }
 }
