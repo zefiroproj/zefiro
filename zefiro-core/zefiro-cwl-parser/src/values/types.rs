@@ -40,25 +40,31 @@ impl CwlFile {
         provided_checksum.or_else(|| CwlFile::calculate_checksum(path).ok())
     }
 
-    fn basename(path: &str) -> Option<String> {
-        Path::new(path)
-            .file_name()
-            .and_then(|name| name.to_str())
-            .map(|s| s.to_string())
+    fn basename(path: &str, provided_basename: Option<String>) -> Option<String> {
+        provided_basename.or_else(|| {
+            Path::new(path)
+                .file_name()
+                .and_then(|name| name.to_str())
+                .map(|s| s.to_string())
+        })
     }
 
-    fn nameroot(path: &str) -> Option<String> {
-        Path::new(path)
-            .file_stem()
-            .and_then(|name| name.to_str())
-            .map(|s| s.to_string())
+    fn nameroot(path: &str, provided_nameroot: Option<String>) -> Option<String> {
+        provided_nameroot.or_else(|| {
+            Path::new(path)
+                .file_stem()
+                .and_then(|name| name.to_str())
+                .map(|s| s.to_string())
+        })
     }
 
-    fn nameext(path: &str) -> Option<String> {
-        Path::new(path)
-            .extension()
-            .and_then(|ext| ext.to_str())
-            .map(|s| s.to_string())
+    fn nameext(path: &str, provided_nameext: Option<String>) -> Option<String> {
+        provided_nameext.or_else(|| {
+            Path::new(path)
+                .extension()
+                .and_then(|ext| ext.to_str())
+                .map(|s| s.to_string())
+        })
     }
 }
 
@@ -70,6 +76,9 @@ impl<'de> Deserialize<'de> for CwlFile {
         #[derive(Deserialize)]
         struct FileHelper {
             location: String,
+            basename: Option<String>,
+            nameroot: Option<String>,
+            nameext: Option<String>,
             size: Option<u64>,
             checksum: Option<String>,
         }
@@ -79,9 +88,9 @@ impl<'de> Deserialize<'de> for CwlFile {
 
         Ok(CwlFile {
             location: helper.location.clone(),
-            basename: CwlFile::basename(path),
-            nameroot: CwlFile::nameroot(path),
-            nameext: CwlFile::nameext(path),
+            basename: CwlFile::basename(path, helper.basename),
+            nameroot: CwlFile::nameroot(path, helper.nameroot),
+            nameext: CwlFile::nameext(path, helper.nameext),
             size: CwlFile::size(path, helper.size),
             checksum: CwlFile::checksum(path, helper.checksum),
         })
