@@ -32,39 +32,37 @@ impl CwlFile {
         Ok(format!("{:x}", hasher.finalize()))
     }
 
+    fn extract_path_info<F, T>(path: &str, provided: Option<T>, extractor: F) -> Option<T>
+    where
+        F: Fn(&Path) -> Option<T>,
+    {
+        provided.or_else(|| extractor(Path::new(path)))
+    }
+
+    fn basename(path: &str, provided_basename: Option<String>) -> Option<String> {
+        Self::extract_path_info(path, provided_basename, |p| {
+            p.file_name().and_then(|name| name.to_str().map(String::from))
+        })
+    }
+
+    fn nameroot(path: &str, provided_nameroot: Option<String>) -> Option<String> {
+        Self::extract_path_info(path, provided_nameroot, |p| {
+            p.file_stem().and_then(|stem| stem.to_str().map(String::from))
+        })
+    }
+
+    fn nameext(path: &str, provided_nameext: Option<String>) -> Option<String> {
+        Self::extract_path_info(path, provided_nameext, |p| {
+            p.extension().and_then(|ext| ext.to_str().map(String::from))
+        })
+    }
+
     fn size(path: &str, provided_size: Option<u64>) -> Option<u64> {
         provided_size.or_else(|| fs::metadata(path).ok().map(|m| m.len()))
     }
 
     fn checksum(path: &str, provided_checksum: Option<String>) -> Option<String> {
-        provided_checksum.or_else(|| CwlFile::calculate_checksum(path).ok())
-    }
-
-    fn basename(path: &str, provided_basename: Option<String>) -> Option<String> {
-        provided_basename.or_else(|| {
-            Path::new(path)
-                .file_name()
-                .and_then(|name| name.to_str())
-                .map(|s| s.to_string())
-        })
-    }
-
-    fn nameroot(path: &str, provided_nameroot: Option<String>) -> Option<String> {
-        provided_nameroot.or_else(|| {
-            Path::new(path)
-                .file_stem()
-                .and_then(|name| name.to_str())
-                .map(|s| s.to_string())
-        })
-    }
-
-    fn nameext(path: &str, provided_nameext: Option<String>) -> Option<String> {
-        provided_nameext.or_else(|| {
-            Path::new(path)
-                .extension()
-                .and_then(|ext| ext.to_str())
-                .map(|s| s.to_string())
-        })
+        provided_checksum.or_else(|| Self::calculate_checksum(path).ok())
     }
 }
 
@@ -76,23 +74,28 @@ impl<'de> Deserialize<'de> for CwlFile {
         #[derive(Deserialize)]
         struct FileHelper {
             location: String,
+            #[serde(default)]
             basename: Option<String>,
+            #[serde(default)]
             nameroot: Option<String>,
+            #[serde(default)]
             nameext: Option<String>,
+            #[serde(default)]
             size: Option<u64>,
+            #[serde(default)]
             checksum: Option<String>,
         }
 
         let helper = FileHelper::deserialize(deserializer)?;
         let path = &helper.location;
 
-        Ok(CwlFile {
+        Ok(Self {
             location: helper.location.clone(),
-            basename: CwlFile::basename(path, helper.basename),
-            nameroot: CwlFile::nameroot(path, helper.nameroot),
-            nameext: CwlFile::nameext(path, helper.nameext),
-            size: CwlFile::size(path, helper.size),
-            checksum: CwlFile::checksum(path, helper.checksum),
+            basename: Self::basename(path, helper.basename),
+            nameroot: Self::nameroot(path, helper.nameroot),
+            nameext: Self::nameext(path, helper.nameext),
+            size: Self::size(path, helper.size),
+            checksum: Self::checksum(path, helper.checksum),
         })
     }
 }
