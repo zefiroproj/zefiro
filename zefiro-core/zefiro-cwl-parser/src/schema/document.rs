@@ -131,55 +131,31 @@ mod tests {
     use super::*;
     use rstest::rstest;
     use std::io::BufWriter;
-    use std::io::Read;
 
     #[rstest]
     #[case("examples/data/clt-step-schema.yml")]
     #[case("examples/data/wf-step-schema.yml")]
-    fn test_parse_correct_schema(#[case] file_path: &str) {
+    fn test_cwlschema_from_path(#[case] file_path: &str) {
         CwlSchema::from_path(file_path).expect("Failed to deserialize CWL schema document");
     }
 
     #[rstest]
-    #[case("examples/data/clt-step-schema.yml", tempfile::NamedTempFile::new().unwrap())]
-    #[case("examples/data/wf-step-schema.yml", tempfile::NamedTempFile::new().unwrap())]
-    fn test_save_schema_to_yaml(
-        #[case] file_path: &str,
-        #[case] temp_file: tempfile::NamedTempFile,
-    ) {
-        let schema =
-            CwlSchema::from_path(file_path).expect("Failed to deserialize CWL schema document");
-        let output_path = temp_file.path().to_path_buf();
+    #[case("examples/data/clt-step-schema.yml")]
+    #[case("examples/data/wf-step-schema.yml")]
+    fn test_cwlschema_to_yaml(#[case] file_path: &str) {
+        let values = CwlSchema::from_path(file_path).expect("Failed to deserialize CWL schema");
+        let temp_file = tempfile::NamedTempFile::new().unwrap();
 
-        // Write the schema to the temporary file
-        {
-            let writer = BufWriter::new(File::create(&output_path).expect("Failed to create file"));
-            schema
-                .to_yaml(writer)
-                .expect("Failed to serialize schema to YAML");
-        }
-
-        // Verify the written content by reading it back
-        let written_content = {
-            let mut reader =
-                BufReader::new(File::open(&output_path).expect("Failed to open temporary file"));
-            let mut content = String::new();
-            reader
-                .read_to_string(&mut content)
-                .expect("Failed to read written content");
-            content
-        };
-
-        // Parse both as CwlSchema and compare the resulting structures instead of raw YAML
-        let original_schema =
-            CwlSchema::from_path(file_path).expect("Failed to parse original file");
-        let written_schema =
-            CwlSchema::from_string(&written_content).expect("Failed to parse written content");
+        // Write values to temp file
+        let writer = BufWriter::new(File::create(temp_file.path()).unwrap());
+        values.to_yaml(writer).expect("Failed to write YAML");
+        // Read and parse written content
+        let written_values = CwlSchema::from_path(temp_file.path().to_str().unwrap())
+            .expect("Failed to read written YAML");
 
         assert_eq!(
-            serde_yaml::to_value(&original_schema).unwrap(),
-            serde_yaml::to_value(&written_schema).unwrap(),
-            "Serialized content doesn't match original"
+            serde_yaml::to_value(&values).unwrap(),
+            serde_yaml::to_value(&written_values).unwrap()
         );
     }
 }
