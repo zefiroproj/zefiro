@@ -1,4 +1,6 @@
-use crate::schema::{command_line_tool::CommandLineTool, workflow::Workflow};
+use crate::schema::{
+    command_line_tool::CommandLineTool, requirements::SUPPORTED_CWL_VERSIONS, workflow::Workflow,
+};
 use anyhow::{bail, ensure, Error, Result};
 use serde::{Deserialize, Serialize};
 use serde_yaml::{self, Value};
@@ -7,8 +9,6 @@ use std::{
     io::{BufReader, Write},
     str::FromStr,
 };
-
-const SUPPORTED_VERSIONS: &[&str] = &["v1.2"];
 
 /// Represents a CWL Schema which can be either a CommandLineTool or a Workflow
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -40,7 +40,7 @@ impl CwlSchema {
             .and_then(Value::as_str)
             .ok_or_else(|| anyhow::anyhow!("Failed to determine CWL specification version."))?;
         ensure!(
-            SUPPORTED_VERSIONS.contains(&version),
+            SUPPORTED_CWL_VERSIONS.contains(&version),
             "Unsupported CWL version: {version}"
         );
 
@@ -157,5 +157,41 @@ mod tests {
             serde_yaml::to_value(&values).unwrap(),
             serde_yaml::to_value(&written_values).unwrap()
         );
+    }
+
+    #[test]
+    fn test_clt_to_yaml_write_error() {
+        use std::io::{Error, ErrorKind, Write};
+
+        struct FailingWriter;
+        impl Write for FailingWriter {
+            fn write(&mut self, _: &[u8]) -> std::io::Result<usize> {
+                Err(Error::new(ErrorKind::Other, "Simulated write error"))
+            }
+            fn flush(&mut self) -> std::io::Result<()> {
+                Ok(())
+            }
+        }
+
+        let schema = CwlSchema::CommandLineTool(CommandLineTool::default());
+        assert!(schema.to_yaml(FailingWriter).is_err());
+    }
+
+    #[test]
+    fn test_wf_to_yaml_write_error() {
+        use std::io::{Error, ErrorKind, Write};
+
+        struct FailingWriter;
+        impl Write for FailingWriter {
+            fn write(&mut self, _: &[u8]) -> std::io::Result<usize> {
+                Err(Error::new(ErrorKind::Other, "Simulated write error"))
+            }
+            fn flush(&mut self) -> std::io::Result<()> {
+                Ok(())
+            }
+        }
+
+        let schema = CwlSchema::Workflow(Workflow::default());
+        assert!(schema.to_yaml(FailingWriter).is_err());
     }
 }

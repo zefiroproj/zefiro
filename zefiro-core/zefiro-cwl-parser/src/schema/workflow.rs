@@ -1,5 +1,5 @@
 use crate::schema::command_line_tool::CommandLineTool;
-use crate::schema::requirements::WorkflowRequirement;
+use crate::schema::requirements::{WorkflowRequirement, SUPPORTED_CWL_VERSIONS};
 use crate::schema::types::{Any, CwlSchemaType, Documentation, Scatter, Source};
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
@@ -7,18 +7,31 @@ use serde_with::skip_serializing_none;
 /// This defines the schema of the CWL Workflow Description document.
 /// See: https://www.commonwl.org/v1.2/Workflow.html
 #[skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct Workflow {
-    pub class: String,
+    #[serde(default = "Workflow::default_cwl_version")]
     pub cwl_version: String,
+    #[serde(default = "Workflow::default_class")]
+    pub class: String,
     pub doc: Option<Documentation>,
+    #[serde(default)]
     pub id: String,
     pub label: Option<String>,
     pub inputs: Vec<WorkflowInputParameter>,
     pub outputs: Vec<WorkflowOutputParameter>,
     pub steps: Vec<WorkflowStep>,
     pub requirements: Vec<WorkflowRequirement>,
+}
+
+impl Workflow {
+    fn default_cwl_version() -> String {
+        SUPPORTED_CWL_VERSIONS[0].to_string()
+    }
+
+    fn default_class() -> String {
+        "Workflow".to_string()
+    }
 }
 
 /// Represents an input parameter for a `Workflow`.
