@@ -21,7 +21,7 @@ pub struct CwlFile {
 }
 
 impl CwlFile {
-    pub fn get_location(&self) -> String {
+    pub fn location(&self) -> String {
         self.location.clone()
     }
 
@@ -32,29 +32,29 @@ impl CwlFile {
         Ok(format!("{:x}", hasher.finalize()))
     }
 
-    fn get_size(path: &str, provided_size: Option<u64>) -> Option<u64> {
+    fn size(path: &str, provided_size: Option<u64>) -> Option<u64> {
         provided_size.or_else(|| fs::metadata(path).ok().map(|m| m.len()))
     }
 
-    fn get_checksum(path: &str, provided_checksum: Option<String>) -> Option<String> {
+    fn checksum(path: &str, provided_checksum: Option<String>) -> Option<String> {
         provided_checksum.or_else(|| CwlFile::calculate_checksum(path).ok())
     }
 
-    fn get_basename(path: &str) -> Option<String> {
+    fn basename(path: &str) -> Option<String> {
         Path::new(path)
             .file_name()
             .and_then(|name| name.to_str())
             .map(|s| s.to_string())
     }
 
-    fn get_nameroot(path: &str) -> Option<String> {
+    fn nameroot(path: &str) -> Option<String> {
         Path::new(path)
             .file_stem()
             .and_then(|name| name.to_str())
             .map(|s| s.to_string())
     }
 
-    fn get_nameext(path: &str) -> Option<String> {
+    fn nameext(path: &str) -> Option<String> {
         Path::new(path)
             .extension()
             .and_then(|ext| ext.to_str())
@@ -77,11 +77,11 @@ impl<'de> Deserialize<'de> for CwlFile {
         let helper = FileHelper::deserialize(deserializer)?;
         let path = &helper.location;
 
-        let size = CwlFile::get_size(path, helper.size);
-        let checksum = CwlFile::get_checksum(path, helper.checksum);
-        let basename = CwlFile::get_basename(path);
-        let nameroot = CwlFile::get_nameroot(path);
-        let nameext = CwlFile::get_nameext(path);
+        let size = CwlFile::size(path, helper.size);
+        let checksum = CwlFile::checksum(path, helper.checksum);
+        let basename = CwlFile::basename(path);
+        let nameroot = CwlFile::nameroot(path);
+        let nameext = CwlFile::nameext(path);
 
         Ok(CwlFile {
             location: helper.location,
