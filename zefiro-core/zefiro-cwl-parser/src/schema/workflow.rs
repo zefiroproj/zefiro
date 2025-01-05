@@ -1,6 +1,6 @@
 use crate::schema::command_line_tool::CommandLineTool;
 use crate::schema::requirements::{WorkflowRequirement, SUPPORTED_CWL_VERSIONS};
-use crate::schema::types::{Any, CwlSchemaType, Documentation, Scatter, Source};
+use crate::schema::types::{Any, CwlSchemaType, Documentation, Scatter, Source, WF_CWL_CLASS};
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 
@@ -30,7 +30,7 @@ impl Workflow {
     }
 
     fn default_class() -> String {
-        "Workflow".to_string()
+        WF_CWL_CLASS.to_string()
     }
 }
 

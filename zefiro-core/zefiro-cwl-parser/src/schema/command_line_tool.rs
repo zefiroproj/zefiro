@@ -1,5 +1,5 @@
 use crate::schema::requirements::{CommandLineToolRequirement, SUPPORTED_CWL_VERSIONS};
-use crate::schema::types::{Any, CwlSchemaType, Documentation};
+use crate::schema::types::{Any, CwlSchemaType, Documentation, CLT_CWL_CLASS};
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 
@@ -33,7 +33,7 @@ impl CommandLineTool {
     }
 
     fn default_class() -> String {
-        "CommandLineTool".to_string()
+        CLT_CWL_CLASS.to_string()
     }
 }
 

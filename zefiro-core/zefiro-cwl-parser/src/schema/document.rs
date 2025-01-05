@@ -1,5 +1,8 @@
 use crate::schema::{
-    command_line_tool::CommandLineTool, requirements::SUPPORTED_CWL_VERSIONS, workflow::Workflow,
+    command_line_tool::CommandLineTool,
+    requirements::SUPPORTED_CWL_VERSIONS,
+    types::{CLT_CWL_CLASS, WF_CWL_CLASS},
+    workflow::Workflow,
 };
 use anyhow::{bail, ensure, Error, Result};
 use serde::{Deserialize, Serialize};
@@ -45,8 +48,8 @@ impl CwlSchema {
         );
 
         match value.get("class").and_then(Value::as_str) {
-            Some("CommandLineTool") => Ok(Self::CommandLineTool(serde_yaml::from_value(value)?)),
-            Some("Workflow") => Ok(Self::Workflow(serde_yaml::from_value(value)?)),
+            Some(CLT_CWL_CLASS) => Ok(Self::CommandLineTool(serde_yaml::from_value(value)?)),
+            Some(WF_CWL_CLASS) => Ok(Self::Workflow(serde_yaml::from_value(value)?)),
             Some(class) => bail!("Unsupported CWL document class: {class}"),
             None => bail!("Failed to determine CWL document class."),
         }

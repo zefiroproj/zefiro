@@ -41,13 +41,15 @@ impl CwlFile {
 
     fn basename(path: &str, provided_basename: Option<String>) -> Option<String> {
         Self::extract_path_info(path, provided_basename, |p| {
-            p.file_name().and_then(|name| name.to_str().map(String::from))
+            p.file_name()
+                .and_then(|name| name.to_str().map(String::from))
         })
     }
 
     fn nameroot(path: &str, provided_nameroot: Option<String>) -> Option<String> {
         Self::extract_path_info(path, provided_nameroot, |p| {
-            p.file_stem().and_then(|stem| stem.to_str().map(String::from))
+            p.file_stem()
+                .and_then(|stem| stem.to_str().map(String::from))
         })
     }
 
