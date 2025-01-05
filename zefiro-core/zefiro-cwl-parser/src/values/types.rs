@@ -74,7 +74,7 @@ impl<'de> Deserialize<'de> for CwlFile {
         D: Deserializer<'de>,
     {
         #[derive(Deserialize)]
-        struct FileHelper {
+        struct Helper {
             location: String,
             #[serde(default)]
             basename: Option<String>,
@@ -88,7 +88,7 @@ impl<'de> Deserialize<'de> for CwlFile {
             checksum: Option<String>,
         }
 
-        let helper = FileHelper::deserialize(deserializer)?;
+        let helper = Helper::deserialize(deserializer)?;
         let path = &helper.location;
 
         Ok(Self {
