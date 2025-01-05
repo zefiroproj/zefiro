@@ -8,5 +8,6 @@ members = [
     "zefiro-cli",
     "zefiro-core",
     "zefiro-core/zefiro-cwl-parser",
+    "zefiro-core/zefiro-cwl-js",
     "zefiro-ui"
 ]

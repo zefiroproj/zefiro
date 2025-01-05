@@ -24,7 +24,7 @@ impl CwlSchema {
     /// ```
     /// use zefiro_cwl_parser::schema::document::CwlSchema;
     ///
-    /// let yaml_file = "examples/data/clt-step-schema.yml";
+    /// let yaml_file = "examples/cwl/clt-step-schema.yml";
     ///
     /// let values = CwlSchema::from_path(yaml_file).expect("Failed to deserialize CWL values document");
     /// ```
@@ -107,7 +107,7 @@ impl CwlSchema {
     /// use std::fs::File;
     /// use std::io::BufWriter;
     ///
-    /// let yaml_file = "examples/data/clt-step-schema.yml";
+    /// let yaml_file = "examples/cwl/clt-step-schema.yml";
     /// let schema = CwlSchema::from_path(yaml_file).expect("Failed to serialize CWL schema document");
     /// let mut tmpfile = tempfile::tempfile().unwrap();
     /// let mut writer = BufWriter::new(tmpfile);
@@ -131,17 +131,18 @@ mod tests {
     use super::*;
     use rstest::rstest;
     use std::io::BufWriter;
+    use std::io::{Error, ErrorKind, Write};
 
     #[rstest]
-    #[case("examples/data/clt-step-schema.yml")]
-    #[case("examples/data/wf-step-schema.yml")]
+    #[case("examples/cwl/clt-step-schema.yml")]
+    #[case("examples/cwl/wf-step-schema.yml")]
     fn test_cwlschema_from_path(#[case] file_path: &str) {
         CwlSchema::from_path(file_path).expect("Failed to deserialize CWL schema document");
     }
 
     #[rstest]
-    #[case("examples/data/clt-step-schema.yml")]
-    #[case("examples/data/wf-step-schema.yml")]
+    #[case("examples/cwl/clt-step-schema.yml")]
+    #[case("examples/cwl/wf-step-schema.yml")]
     fn test_cwlschema_to_yaml(#[case] file_path: &str) {
         let values = CwlSchema::from_path(file_path).expect("Failed to deserialize CWL schema");
         let temp_file = tempfile::NamedTempFile::new().unwrap();
@@ -159,38 +160,24 @@ mod tests {
         );
     }
 
+    struct FailingWriter;
+    impl Write for FailingWriter {
+        fn write(&mut self, _: &[u8]) -> std::io::Result<usize> {
+            Err(Error::new(ErrorKind::Other, "Simulated write error"))
+        }
+        fn flush(&mut self) -> std::io::Result<()> {
+            Ok(())
+        }
+    }
+
     #[test]
     fn test_clt_to_yaml_write_error() {
-        use std::io::{Error, ErrorKind, Write};
-
-        struct FailingWriter;
-        impl Write for FailingWriter {
-            fn write(&mut self, _: &[u8]) -> std::io::Result<usize> {
-                Err(Error::new(ErrorKind::Other, "Simulated write error"))
-            }
-            fn flush(&mut self) -> std::io::Result<()> {
-                Ok(())
-            }
-        }
-
         let schema = CwlSchema::CommandLineTool(CommandLineTool::default());
         assert!(schema.to_yaml(FailingWriter).is_err());
     }
 
     #[test]
     fn test_wf_to_yaml_write_error() {
-        use std::io::{Error, ErrorKind, Write};
-
-        struct FailingWriter;
-        impl Write for FailingWriter {
-            fn write(&mut self, _: &[u8]) -> std::io::Result<usize> {
-                Err(Error::new(ErrorKind::Other, "Simulated write error"))
-            }
-            fn flush(&mut self) -> std::io::Result<()> {
-                Ok(())
-            }
-        }
-
         let schema = CwlSchema::Workflow(Workflow::default());
         assert!(schema.to_yaml(FailingWriter).is_err());
     }
