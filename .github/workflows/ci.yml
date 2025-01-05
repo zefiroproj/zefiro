@@ -21,9 +21,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Check
-        run: cargo check --offline --verbose
+        run: cargo check --verbose
       - name: Check without default features
-        run: cargo check --offline --no-default-features --verbose
+        run: cargo check --no-default-features --verbose
 
   typos:
     name: Typos
