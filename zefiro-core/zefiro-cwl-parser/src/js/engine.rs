@@ -6,7 +6,7 @@ pub struct JsEngine {
 }
 
 impl JsEngine {
-    /// Creates a new `JsEngine` with the given `inputs` JSON string.
+    /// Creates a new `JsEngine` and initializes with given `inputs`, `outputs`, and `self_obj`.
     pub fn new(inputs: &str, outputs: &str, self_obj: &str) -> Result<Self, Error> {
         let mut runtime = JsRuntime::new(Default::default());
         let init_script = format!(
@@ -21,7 +21,7 @@ impl JsEngine {
         Ok(Self { runtime })
     }
 
-    /// Executes the given JavaScript `script` and returns the result as an `f64`.
+    /// Executes JavaScript `script` and returns the result as a string.
     pub fn run(&mut self, script: String) -> Result<String, Error> {
         let result = self
             .runtime
@@ -44,50 +44,18 @@ mod tests {
 
     #[rstest]
     #[case(
-        json!({
-            "in_fastq": {
-                "location": "/path/to/input.fastq",
-                "size": 1024 * 1024 * 512,
-            }
-        }).to_string(),
-        json!({
-            "out_fastq": {
-                "location": "/path/to/output.fastq",
-            }
-        }).to_string(),
-        json!({
-            "self": {
-                "location": "/path/to/output.fastq",
-            }
-        }).to_string(),
-        r#"const fastq_size = inputs.in_fastq.size / (1024 * 1024);
-        fastq_size * 2;"#,
+        json!({"in_fastq": {"location": "/path/to/input.fastq", "size": 1024 * 1024 * 512}}).to_string(),
+        json!({"out_fastq": {"location": "/path/to/output.fastq"}}).to_string(),
+        json!({"self": {"location": "/path/to/output.fastq"}}).to_string(),
+        r#"inputs.in_fastq.size / (1024 * 1024) * 2;"#,
         "1024",
     )]
     #[case(
         json!({"output_location_subdir": "output/"}).to_string(),
-        json!({"out_fastq": [{
-            "location": "/path/to/output.fastq",
-            "basename": "output.fastq",
-            "nameroot": "output",
-            "nameext": "fastq",
-        }]}).to_string(),
-        json!([{
-            "location": "/path/to/output.fastq",
-            "basename": "output.fastq",
-            "nameroot": "output",
-            "nameext": "fastq",
-        }]).to_string(),
-        r#"
-        self[0].location = inputs.output_location_subdir + self[0].nameroot + '.fq';
-        self[0];
-        "#,
-        json!({
-            "location": "output/output.fq",
-            "basename": "output.fastq",
-            "nameroot": "output",
-            "nameext": "fastq"
-        }).to_string(),
+        json!({"out_fastq": [{"location": "/path/to/output.fastq", "basename": "output.fastq"}]}).to_string(),
+        json!([{"location": "/path/to/output.fastq", "basename": "output.fastq"}]).to_string(),
+        r#"self[0].location = inputs.output_location_subdir + self[0].nameroot + '.fq'; self[0];"#,
+        json!({"location": "output/output.fq", "basename": "output.fastq"}).to_string(),
     )]
     fn test_jsexecutor_run(
         #[case] inputs: String,
@@ -97,11 +65,10 @@ mod tests {
         #[case] expected: String,
     ) {
         let mut executor = JsEngine::new(&inputs, &outputs, &self_obj)
-            .expect("Failed to deserialize CWL schema document");
+            .expect("Failed to initialize JavaScript engine");
         let result = executor
             .run(js_script)
-            .expect("JavaScript execution failed")
-            .to_string();
+            .expect("JavaScript execution failed");
         assert_eq!(result, expected);
     }
 }
