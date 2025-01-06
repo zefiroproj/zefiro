@@ -7,15 +7,26 @@ use std::path::Path;
 /// Represents a `File` object in CWL
 #[derive(Clone, Debug, Serialize, Default)]
 pub struct CwlFile {
+    /// Full path to the file, e.g., "/path/to/file.txt".
     pub location: String,
+
+    /// Basename of the file, e.g., "file.txt".
     #[serde(default)]
     pub basename: Option<String>,
+
+    /// Basename without the file extension, e.g., "file".
     #[serde(default)]
     pub nameroot: Option<String>,
+
+    /// File extension, e.g., "txt".
     #[serde(default)]
     pub nameext: Option<String>,
+
+    /// File size in bytes, e.g., 1024.
     #[serde(default)]
     pub size: Option<u64>,
+
+    /// SHA-1 checksum of the file, e.g., "c63b83369243849f80049b2726dcc8db0b18d03e".
     #[serde(default)]
     pub checksum: Option<String>,
 }
