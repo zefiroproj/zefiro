@@ -10,13 +10,17 @@ impl JsEngine {
     pub fn new(inputs: &str, outputs: &str, self_obj: &str) -> Result<Self, Error> {
         let mut runtime = JsRuntime::new(Default::default());
         let init_script = format!(
-            "const inputs = {}; const outputs = {}; const self = {};",
+            r#"
+                const inputs = {};
+                const outputs = {};
+                const self = {};
+            "#,
             inputs, outputs, self_obj
         );
 
         runtime
             .execute_script("<init>", init_script)
-            .context("Error initializing JavaScript context")?;
+            .context("Failed to initialize JavaScript context")?;
 
         Ok(Self { runtime })
     }
@@ -26,12 +30,12 @@ impl JsEngine {
         let result = self
             .runtime
             .execute_script("<eval>", script)
-            .context("Error executing JavaScript expression")?;
-
+            .context("Failed to execute JavaScript expression")?;
         let scope = &mut self.runtime.handle_scope();
-        let local = v8::Local::new(scope, result);
+        let local_result = v8::Local::new(scope, result);
         let result_json: serde_json::Value =
-            serde_v8::from_v8(scope, local).context("Error deserializing result")?;
+            serde_v8::from_v8(scope, local_result).context("Failed to deserialize result")?;
+
         Ok(result_json.to_string())
     }
 }
@@ -46,16 +50,16 @@ mod tests {
     #[case(
         json!({"in_fastq": {"location": "/path/to/input.fastq", "size": 1024 * 1024 * 512}}).to_string(),
         json!({"out_fastq": {"location": "/path/to/output.fastq"}}).to_string(),
-        json!({"self": {"location": "/path/to/output.fastq"}}).to_string(),
+        json!([{"location": "/path/to/output.fastq"}]).to_string(),
         r#"inputs.in_fastq.size / (1024 * 1024) * 2;"#,
         "1024",
     )]
     #[case(
         json!({"output_location_subdir": "output/"}).to_string(),
         json!({"out_fastq": [{"location": "/path/to/output.fastq", "basename": "output.fastq"}]}).to_string(),
-        json!([{"location": "/path/to/output.fastq", "basename": "output.fastq"}]).to_string(),
+        json!([{"location": "/path/to/output.fastq", "nameroot": "output"}]).to_string(),
         r#"self[0].location = inputs.output_location_subdir + self[0].nameroot + '.fq'; self[0];"#,
-        json!({"location": "output/output.fq", "basename": "output.fastq"}).to_string(),
+        json!({"location": "output/output.fq", "nameroot": "output"}).to_string(),
     )]
     fn test_jsexecutor_run(
         #[case] inputs: String,
