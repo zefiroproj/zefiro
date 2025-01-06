@@ -109,7 +109,7 @@ pub struct CwlDirectory {
 }
 
 impl CwlDirectory {
-    pub fn get_location(&self) -> &str {
+    pub fn location(&self) -> &str {
         &self.location
     }
 }
