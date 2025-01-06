@@ -28,7 +28,7 @@ impl CwlValues {
     /// Deserializes YAML `file` containing CWL values into CwlValues structure.
     ///
     /// ```
-    /// use zefiro_cwl_parser::values::document::CwlValues;
+    /// use zefiro_core_cwl::values::document::CwlValues;
     /// let yaml_file = "examples/cwl/clt-step-values.yml";
     /// let values = CwlValues::from_path(yaml_file).expect("Failed to deserialize CWL values document");
     /// ```
@@ -49,7 +49,7 @@ impl CwlValues {
     /// Deserializes YAML `string` containing CWL values into CwlValues structure.
     ///
     /// ```
-    /// use zefiro_cwl_parser::values::document::CwlValues;
+    /// use zefiro_core_cwl::values::document::CwlValues;
     ///
     /// let yaml_input = r#"
     /// in_file:
@@ -78,7 +78,7 @@ impl CwlValues {
     /// Serializes CwlValues structure and writes it into `file`.
     ///
     /// ```
-    /// use zefiro_cwl_parser::values::document::CwlValues;
+    /// use zefiro_core_cwl::values::document::CwlValues;
     /// use std::io::BufWriter;
     ///
     /// let yaml_input = r#"

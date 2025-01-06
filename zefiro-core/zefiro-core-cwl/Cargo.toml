@@ -1,5 +1,5 @@
 [package]
-name = "zefiro-cwl-parser"
+name = "zefiro-core-cwl"
 version = "0.1.0"
 description = """
 "The Common Workflow Language (CWL) object model that used in `zefiro`.

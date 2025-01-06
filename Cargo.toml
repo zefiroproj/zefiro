@@ -7,6 +7,6 @@ edition = "2021"
 members = [
     "zefiro-cli",
     "zefiro-core",
-    "zefiro-core/zefiro-cwl-parser",
+    "zefiro-core/zefiro-core-cwl",
     "zefiro-ui"
 ]
