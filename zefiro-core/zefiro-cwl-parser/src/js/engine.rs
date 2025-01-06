@@ -10,7 +10,7 @@ impl JsEngine {
     pub fn new(inputs: &str, outputs: &str, self_obj: &str) -> Result<Self, Error> {
         let mut runtime = JsRuntime::new(Default::default());
         let init_script = format!(
-            "const inputs = {};const outputs = {};const self = {};",
+            "const inputs = {}; const outputs = {}; const self = {};",
             inputs, outputs, self_obj
         );
 
@@ -32,7 +32,6 @@ impl JsEngine {
         let local = v8::Local::new(scope, result);
         let result_json: serde_json::Value =
             serde_v8::from_v8(scope, local).context("Error deserializing result")?;
-
         Ok(result_json.to_string())
     }
 }
@@ -73,15 +72,15 @@ mod tests {
             "nameroot": "output",
             "nameext": "fastq",
         }]}).to_string(),
-        json!({"self": [{
+        json!([{
             "location": "/path/to/output.fastq",
             "basename": "output.fastq",
             "nameroot": "output",
             "nameext": "fastq",
-        }]}).to_string(),
+        }]).to_string(),
         r#"
         self[0].location = inputs.output_location_subdir + self[0].nameroot + '.fq';
-        return self[0]
+        self[0];
         "#,
         json!({
             "location": "output/output.fq",
