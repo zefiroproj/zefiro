@@ -3,10 +3,7 @@ use anyhow::{Error, Result};
 use serde::{Deserialize, Serialize};
 use serde_yaml;
 use std::{
-    collections::HashMap,
-    fs::File,
-    io::{BufReader, Write},
-    ops::Deref,
+    collections::HashMap, fs::File, io::{BufReader, Write}, ops::Deref
 };
 
 /// Represents a collection of CWL input and output values as key-value pairs
@@ -95,6 +92,10 @@ impl CwlValues {
     /// ```
     pub fn to_yaml<W: Write>(&self, writer: W) -> Result<()> {
         serde_yaml::to_writer(writer, self).map_err(Into::into)
+    }
+
+    pub fn to_json(&self) -> Result<serde_json::Value, Error> {
+        Ok(serde_json::to_value(self)?)
     }
 }
 

@@ -1,8 +1,8 @@
 use crate::schema::{
-    clt::CommandLineTool,
+    command_line_tool::CommandLineTool,
     requirements::MINIMAL_CWL_VERSION,
     types::{CLT_CWL_CLASS, WF_CWL_CLASS},
-    wf::Workflow,
+    workflow::Workflow,
 };
 use anyhow::{bail, ensure, Error, Result};
 use serde::{Deserialize, Serialize};

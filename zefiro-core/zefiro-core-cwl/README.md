@@ -4,7 +4,7 @@ A Rust library for parsing and working with Common Workflow Language (CWL) docum
 
 ## Overview
 
-* Supports only some fields of CWL v1.2 specification (see description of structures in the code)
+* Supports **only some fields** of CWL **v1.2** specification (see description of structures in the code)
 * Can serialize and deserialize [CommandLineTool](https://www.commonwl.org/v1.2/CommandLineTool.html) and [Workflow](https://www.commonwl.org/v1.2/Workflow.html) documents
 
 ## Usage
@@ -17,7 +17,7 @@ zefiro-core-cwl = "0.1.0"
 ```
 
 
-### Parsing CWL Schema Documents
+### How to parse CWL Schema document?
 
 ```rust
 use zefiro_core_cwl::CwlSchema;
@@ -62,7 +62,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 
-### Parsing CWL Values Documents
+### How to parse CWL Values document?
 
 ```rust
 use zefiro_core_cwl::CwlValues;
@@ -85,5 +85,4 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
-### JavaScript expressions execution
-
+### How to execute JavaScript expressions?

@@ -1,21 +1,21 @@
 use anyhow::{Context, Error};
 use deno_core::{serde_json, serde_v8, v8, JsRuntime};
+use serde_json::Value;
 
 pub struct JsExecutor {
     runtime: JsRuntime,
 }
 
 impl JsExecutor {
-    /// Creates a new `JsExecutor` and initializes with given `inputs`, `outputs`, and `self_obj`.
-    pub fn new(cwl_inputs: &str, cwl_outputs: &str, cwl_self: &str) -> Result<Self, Error> {
+    /// Creates a new `JsExecutor` and initializes with given `cwl_inputs`, `cwl_outputs`, and `cwl_self`.
+    pub fn new(cwl_inputs: &Value, cwl_self: &str) -> Result<Self, Error> {
         let mut runtime = JsRuntime::new(Default::default());
         let init_script = format!(
             r#"
                 const inputs = {};
-                const outputs = {};
                 const self = {};
             "#,
-            cwl_inputs, cwl_outputs, cwl_self
+            cwl_inputs, cwl_self
         );
 
         runtime
@@ -42,33 +42,39 @@ impl JsExecutor {
 
 #[cfg(test)]
 mod tests {
+    use crate::CwlValues;
+
     use super::*;
     use rstest::rstest;
     use serde_json::json;
 
     #[rstest]
     #[case(
-        json!({"in_fastq": {"location": "/path/to/input.fastq", "size": 1024 * 1024 * 512}}).to_string(),
-        json!({"out_fastq": {"location": "/path/to/output.fastq"}}).to_string(),
+        CwlValues::from_string(r#"
+        in_fastq:
+            class: File
+            location: "/path/to/input.fastq"
+            size: 536870912
+        "#).unwrap().to_json().unwrap(),
         json!([{"location": "/path/to/output.fastq"}]).to_string(),
         r#"inputs.in_fastq.size / (1024 * 1024) * 2;"#,
         "1024",
     )]
     #[case(
-        json!({"output_location_subdir": "output/"}).to_string(),
-        json!({"out_fastq": [{"location": "/path/to/output.fastq", "basename": "output.fastq"}]}).to_string(),
+        CwlValues::from_string(r#"
+        output_location_subdir: "output/"
+        "#).unwrap().to_json().unwrap(),
         json!([{"location": "/path/to/output.fastq", "nameroot": "output"}]).to_string(),
         r#"self[0].location = inputs.output_location_subdir + self[0].nameroot + '.fq'; self[0];"#,
         json!({"location": "output/output.fq", "nameroot": "output"}).to_string(),
     )]
     fn test_jsexecutor_run(
-        #[case] cwl_inputs: String,
-        #[case] cwl_outputs: String,
+        #[case] cwl_inputs: Value,
         #[case] cwl_self: String,
         #[case] js_script: String,
         #[case] expected_result: String,
     ) {
-        let mut executor = JsExecutor::new(&cwl_inputs, &cwl_outputs, &cwl_self)
+        let mut executor = JsExecutor::new(&cwl_inputs, &cwl_self)
             .expect("Failed to initialize JavaScript engine");
         let result = executor
             .run(js_script)
