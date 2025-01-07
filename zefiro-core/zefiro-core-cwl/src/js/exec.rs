@@ -8,7 +8,7 @@ pub struct JsExecutor {
 
 impl JsExecutor {
     /// Creates a new `JsExecutor` with given `cwl_inputs` and `cwl_self`.
-    pub fn new(cwl_inputs: &Value, cwl_self: &str) -> Result<Self, Error> {
+    pub fn new(cwl_inputs: &Value, cwl_self: &Value) -> Result<Self, Error> {
         let mut runtime = JsRuntime::new(Default::default());
         let init_script = format!(
             r#"const inputs = {}; const self = {};"#,
@@ -50,22 +50,22 @@ mod tests {
             "in_fastq": {
                 "class": "File",
                 "location": "/path/to/input.fastq",
-                "size": 536870912
+                "size": 1024 * 1024 * 512
             }
         }),
-        json!([{ "location": "/path/to/output.fastq" }]).to_string(),
+        json!([{ "location": "/path/to/output.fastq" }]),
         "inputs.in_fastq.size / (1024 * 1024) * 2;",
         "1024"
     )]
     #[case(
         json!({ "output_location_subdir": "output/" }),
-        json!([{ "location": "/path/to/output.fastq", "nameroot": "output" }]).to_string(),
+        json!([{ "location": "/path/to/output.fastq", "nameroot": "output" }]),
         "self[0].location = inputs.output_location_subdir + self[0].nameroot + '.fq'; self[0];",
         json!({ "location": "output/output.fq", "nameroot": "output" }).to_string()
     )]
     fn test_jsexecutor_run(
         #[case] cwl_inputs: Value,
-        #[case] cwl_self: String,
+        #[case] cwl_self: Value,
         #[case] js_script: &str,
         #[case] expected_result: String,
     ) {
