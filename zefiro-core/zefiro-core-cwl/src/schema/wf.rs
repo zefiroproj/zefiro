@@ -1,5 +1,5 @@
-use crate::schema::command_line_tool::CommandLineTool;
-use crate::schema::requirements::{WorkflowRequirement, SUPPORTED_CWL_VERSIONS};
+use crate::schema::clt::CommandLineTool;
+use crate::schema::requirements::{WorkflowRequirement, MINIMAL_CWL_VERSION};
 use crate::schema::types::{Any, CwlSchemaType, Documentation, Scatter, Source, WF_CWL_CLASS};
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
@@ -26,7 +26,7 @@ pub struct Workflow {
 
 impl Workflow {
     fn default_cwl_version() -> String {
-        SUPPORTED_CWL_VERSIONS[0].to_string()
+        MINIMAL_CWL_VERSION.to_string()
     }
 
     fn default_class() -> String {

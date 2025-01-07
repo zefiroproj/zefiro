@@ -1,8 +1,8 @@
 use crate::schema::{
-    command_line_tool::CommandLineTool,
-    requirements::SUPPORTED_CWL_VERSIONS,
+    clt::CommandLineTool,
+    requirements::MINIMAL_CWL_VERSION,
     types::{CLT_CWL_CLASS, WF_CWL_CLASS},
-    workflow::Workflow,
+    wf::Workflow,
 };
 use anyhow::{bail, ensure, Error, Result};
 use serde::{Deserialize, Serialize};
@@ -43,7 +43,7 @@ impl CwlSchema {
             .and_then(Value::as_str)
             .ok_or_else(|| anyhow::anyhow!("Failed to determine CWL specification version."))?;
         ensure!(
-            SUPPORTED_CWL_VERSIONS.contains(&version),
+            MINIMAL_CWL_VERSION == version,
             "Unsupported CWL version: {version}"
         );
 

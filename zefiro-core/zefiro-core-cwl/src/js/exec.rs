@@ -7,7 +7,7 @@ pub struct JsExecutor {
 
 impl JsExecutor {
     /// Creates a new `JsExecutor` and initializes with given `inputs`, `outputs`, and `self_obj`.
-    pub fn new(inputs: &str, outputs: &str, self_obj: &str) -> Result<Self, Error> {
+    pub fn new(cwl_inputs: &str, cwl_outputs: &str, cwl_self: &str) -> Result<Self, Error> {
         let mut runtime = JsRuntime::new(Default::default());
         let init_script = format!(
             r#"
@@ -15,7 +15,7 @@ impl JsExecutor {
                 const outputs = {};
                 const self = {};
             "#,
-            inputs, outputs, self_obj
+            cwl_inputs, cwl_outputs, cwl_self
         );
 
         runtime
@@ -62,17 +62,17 @@ mod tests {
         json!({"location": "output/output.fq", "nameroot": "output"}).to_string(),
     )]
     fn test_jsexecutor_run(
-        #[case] inputs: String,
-        #[case] outputs: String,
-        #[case] self_obj: String,
+        #[case] cwl_inputs: String,
+        #[case] cwl_outputs: String,
+        #[case] cwl_self: String,
         #[case] js_script: String,
-        #[case] expected: String,
+        #[case] expected_result: String,
     ) {
-        let mut executor = JsExecutor::new(&inputs, &outputs, &self_obj)
+        let mut executor = JsExecutor::new(&cwl_inputs, &cwl_outputs, &cwl_self)
             .expect("Failed to initialize JavaScript engine");
         let result = executor
             .run(js_script)
             .expect("JavaScript execution failed");
-        assert_eq!(result, expected);
+        assert_eq!(result, expected_result);
     }
 }

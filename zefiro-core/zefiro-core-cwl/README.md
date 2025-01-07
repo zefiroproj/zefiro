@@ -87,18 +87,3 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 ### JavaScript expressions execution
 
-<!-- ```rust
-use zefiro_core_cwl::JsExecutor;
-
-// Parse input values from file
-let values = CwlValues::from_path("values.yml")?;
-
-// Create values from string
-let yaml_input = r#"
-input_file:
-    class: File
-    location: 's3://bucket/input.txt'
-output_file: 'output.txt'
-"#;
-let values = CwlValues::from_string(yaml_input)?;
-``` -->

@@ -1,5 +1,5 @@
-pub mod command_line_tool;
+pub mod clt;
 pub mod document;
 pub mod requirements;
 pub mod types;
-pub mod workflow;
+pub mod wf;

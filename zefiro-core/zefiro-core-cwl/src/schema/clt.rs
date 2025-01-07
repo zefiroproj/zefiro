@@ -1,4 +1,4 @@
-use crate::schema::requirements::{CommandLineToolRequirement, SUPPORTED_CWL_VERSIONS};
+use crate::schema::requirements::{CommandLineToolRequirement, MINIMAL_CWL_VERSION};
 use crate::schema::types::{Any, CwlSchemaType, Documentation, CLT_CWL_CLASS};
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
@@ -29,7 +29,7 @@ pub struct CommandLineTool {
 
 impl CommandLineTool {
     fn default_cwl_version() -> String {
-        SUPPORTED_CWL_VERSIONS[0].to_string()
+        MINIMAL_CWL_VERSION.to_string()
     }
 
     fn default_class() -> String {
