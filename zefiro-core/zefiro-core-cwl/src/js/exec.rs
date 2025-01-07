@@ -1,12 +1,12 @@
 use anyhow::{Context, Error};
 use deno_core::{serde_json, serde_v8, v8, JsRuntime};
 
-pub struct JsEngine {
+pub struct JsExecutor {
     runtime: JsRuntime,
 }
 
-impl JsEngine {
-    /// Creates a new `JsEngine` and initializes with given `inputs`, `outputs`, and `self_obj`.
+impl JsExecutor {
+    /// Creates a new `JsExecutor` and initializes with given `inputs`, `outputs`, and `self_obj`.
     pub fn new(inputs: &str, outputs: &str, self_obj: &str) -> Result<Self, Error> {
         let mut runtime = JsRuntime::new(Default::default());
         let init_script = format!(
@@ -68,7 +68,7 @@ mod tests {
         #[case] js_script: String,
         #[case] expected: String,
     ) {
-        let mut executor = JsEngine::new(&inputs, &outputs, &self_obj)
+        let mut executor = JsExecutor::new(&inputs, &outputs, &self_obj)
             .expect("Failed to initialize JavaScript engine");
         let result = executor
             .run(js_script)

@@ -22,39 +22,43 @@ zefiro-core-cwl = "0.1.0"
 ```rust
 use zefiro_core_cwl::CwlSchema;
 
-// Parse from file
-let schema = CwlSchema::from_path("workflow.yml")?;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+  // Parse from file
+  let schema = CwlSchema::from_path("examples/cwl/clt-step-schema.yml").unwrap();
 
-// Parse from string
-let yaml_str = r#"
-cwlVersion: v1.2
-class: CommandLineTool
-id: step
-inputs:
-    - id: in_file
-      type: File
-      inputBinding:
-        prefix: --in-file
-    - id: out_file
-      type: string
-      default: "output.txt"
-      inputBinding:
-        prefix: --out-file
-    - id: output_location_subdir
-      type: string
-      default: output/
-outputs:
-    - id: out_file
-      type: File
-      outputBinding:
-        glob: $(inputs.out_file)
-        outputEval: ${self[0].location += inputs.output_location_subdir; return self[0]}
-requirements:
-    - class: DockerRequirement
-      dockerPull: step-image-uri:1.0
-    - class: InlineJavascriptRequirement
-"#;
-let schema = CwlSchema::from_string(yaml_str)?;
+  // Parse from string
+  let yaml_str = r#"
+  cwlVersion: v1.2
+  class: CommandLineTool
+  id: step
+  inputs:
+      - id: in_file
+        type: File
+        inputBinding:
+          prefix: --in-file
+      - id: out_file
+        type: string
+        default: "output.txt"
+        inputBinding:
+          prefix: --out-file
+      - id: output_location_subdir
+        type: string
+        default: output/
+  outputs:
+      - id: out_file
+        type: File
+        outputBinding:
+          glob: $(inputs.out_file)
+          outputEval: ${self[0].location += inputs.output_location_subdir; return self[0]}
+  requirements:
+      - class: DockerRequirement
+        dockerPull: step-image-uri:1.0
+      - class: InlineJavascriptRequirement
+  "#;
+  let schema = CwlSchema::from_string(yaml_str).unwrap();
+  
+  Ok(())
+}
 ```
 
 
@@ -62,6 +66,29 @@ let schema = CwlSchema::from_string(yaml_str)?;
 
 ```rust
 use zefiro_core_cwl::CwlValues;
+
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+  // Parse input values from file
+  let values = CwlValues::from_path("examples/cwl/clt-step-values.yml").unwrap();
+
+  // Create values from string
+  let yaml_input = r#"
+  input_file:
+      class: File
+      location: 's3://bucket/input.txt'
+  output_file: 'output.txt'
+  "#;
+  let values = CwlValues::from_string(yaml_input).unwrap();
+
+  Ok(())
+}
+```
+
+### JavaScript expressions execution
+
+<!-- ```rust
+use zefiro_core_cwl::JsExecutor;
 
 // Parse input values from file
 let values = CwlValues::from_path("values.yml")?;
@@ -74,4 +101,4 @@ input_file:
 output_file: 'output.txt'
 "#;
 let values = CwlValues::from_string(yaml_input)?;
-```
+``` -->
