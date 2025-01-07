@@ -3,7 +3,10 @@ use anyhow::{Error, Result};
 use serde::{Deserialize, Serialize};
 use serde_yaml;
 use std::{
-    collections::HashMap, fs::File, io::{BufReader, Write}, ops::Deref
+    collections::HashMap,
+    fs::File,
+    io::{BufReader, Write},
+    ops::Deref,
 };
 
 /// Represents a collection of CWL input and output values as key-value pairs
