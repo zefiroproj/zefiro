@@ -1,7 +1,20 @@
 [package]
 name = "zefiro-cwl-js-exec"
 version = "0.1.0"
+description = """
+"The Common Workflow Language (CWL) object model that used in `zefiro`.
+"""
+authors = [
+  "Nikita Syzrantsev <syzrantsev.n@gmail.com>"
+]
+categories = ["JavaScript", "CWL"]
+keywords = ["JavaScript", "CWL Expressions"]
 edition = "2021"
+homepage = "https://github.com/zefiroproj/zefiro/zefiro-core/zefiro-cwl-js-exec"
+license = "Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/zefiroproj/zefiro"
+rust-version = "1.83.0"
 
 [dependencies]
 anyhow = "1.0.95"
