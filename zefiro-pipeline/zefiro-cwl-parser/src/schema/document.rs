@@ -25,9 +25,9 @@ impl CwlSchema {
     /// Deserializes YAML `file` containing CWL values into CwlSchema structure.
     ///
     /// ```
-    /// use zefiro_core_cwl::schema::document::CwlSchema;
+    /// use zefiro_cwl_parser::schema::document::CwlSchema;
     ///
-    /// let yaml_file = "examples/cwl/clt-step-schema.yml";
+    /// let yaml_file = "test_data/cwl/clt-step-schema.yml";
     ///
     /// let values = CwlSchema::from_path(yaml_file).expect("Failed to deserialize CWL values document");
     /// ```
@@ -61,7 +61,7 @@ impl CwlSchema {
     ///
     /// ```
     /// use serde_yaml::Value;
-    /// use zefiro_core_cwl::schema::document::CwlSchema;
+    /// use zefiro_cwl_parser::schema::document::CwlSchema;
     ///
     /// let yaml_str = r#"
     /// cwlVersion: v1.2
@@ -106,11 +106,11 @@ impl CwlSchema {
 
     /// Serializes CwlSchema structure and writes it into `file`.
     /// ```
-    /// use zefiro_core_cwl::schema::document::CwlSchema;
+    /// use zefiro_cwl_parser::schema::document::CwlSchema;
     /// use std::fs::File;
     /// use std::io::BufWriter;
     ///
-    /// let yaml_file = "examples/cwl/clt-step-schema.yml";
+    /// let yaml_file = "test_data/cwl/clt-step-schema.yml";
     /// let schema = CwlSchema::from_path(yaml_file).expect("Failed to serialize CWL schema document");
     /// let mut tmpfile = tempfile::tempfile().unwrap();
     /// let mut writer = BufWriter::new(tmpfile);
@@ -137,15 +137,15 @@ mod tests {
     use std::io::{Error, ErrorKind, Write};
 
     #[rstest]
-    #[case("examples/cwl/clt-step-schema.yml")]
-    #[case("examples/cwl/wf-step-schema.yml")]
+    #[case("test_data/cwl/clt-step-schema.yml")]
+    #[case("test_data/cwl/wf-step-schema.yml")]
     fn test_cwlschema_from_path(#[case] file_path: &str) {
         CwlSchema::from_path(file_path).expect("Failed to deserialize CWL schema document");
     }
 
     #[rstest]
-    #[case("examples/cwl/clt-step-schema.yml")]
-    #[case("examples/cwl/wf-step-schema.yml")]
+    #[case("test_data/cwl/clt-step-schema.yml")]
+    #[case("test_data/cwl/wf-step-schema.yml")]
     fn test_cwlschema_to_yaml(#[case] file_path: &str) {
         let values = CwlSchema::from_path(file_path).expect("Failed to deserialize CWL schema");
         let temp_file = tempfile::NamedTempFile::new().unwrap();

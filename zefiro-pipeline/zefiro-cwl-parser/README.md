@@ -1,4 +1,4 @@
-# zefiro-core-cwl
+# zefiro-cwl-parser
 
 A Rust library for parsing and working with Common Workflow Language (CWL) documents.
 
@@ -13,18 +13,18 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-zefiro-core-cwl = "0.1.0"
+zefiro-cwl-parser = "0.1.0"
 ```
 
 
 ### How to parse CWL Schema document?
 
 ```rust
-use zefiro_core_cwl::CwlSchema;
+use zefiro_cwl_parser::CwlSchema;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
   // Parse from file
-  let schema = CwlSchema::from_path("examples/cwl/clt-step-schema.yml").unwrap();
+  let schema = CwlSchema::from_path("test_data/cwl/clt-step-schema.yml").unwrap();
 
   // Parse from string
   let yaml_str = r#"
@@ -65,12 +65,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ### How to parse CWL Values document?
 
 ```rust
-use zefiro_core_cwl::CwlValues;
+use zefiro_cwl_parser::CwlValues;
 
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
   // Parse input values from file
-  let values = CwlValues::from_path("examples/cwl/clt-step-values.yml").unwrap();
+  let values = CwlValues::from_path("test_data/cwl/clt-step-values.yml").unwrap();
 
   // Create values from string
   let yaml_input = r#"
