@@ -96,10 +96,6 @@ impl CwlValues {
     pub fn to_yaml<W: Write>(&self, writer: W) -> Result<()> {
         serde_yaml::to_writer(writer, self).map_err(Into::into)
     }
-
-    pub fn to_json(&self) -> Result<serde_json::Value, Error> {
-        Ok(serde_json::to_value(self)?)
-    }
 }
 
 #[cfg(test)]

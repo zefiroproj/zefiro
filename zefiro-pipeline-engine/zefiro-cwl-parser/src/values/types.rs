@@ -1,11 +1,11 @@
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Serialize};
 use sha1::{Digest, Sha1};
 use std::fs;
 use std::io;
 use std::path::Path;
 
 /// Represents a `File` object in CWL
-#[derive(Clone, Debug, Serialize, Default)]
+#[derive(Clone, Debug, Serialize, Deserialize, Default)]
 pub struct CwlFile {
     /// Full path to the file, e.g., "/path/to/file.txt".
     pub location: String,
@@ -36,80 +36,46 @@ impl CwlFile {
         self.location.clone()
     }
 
-    fn calculate_checksum(path: &str) -> io::Result<String> {
+    pub fn calculate_checksum(path: &str) -> io::Result<String> {
         let mut file = fs::File::open(path)?;
         let mut hasher = Sha1::new();
         io::copy(&mut file, &mut hasher)?;
         Ok(format!("{:x}", hasher.finalize()))
     }
 
-    fn extract_path_info<F, T>(path: &str, provided: Option<T>, extractor: F) -> Option<T>
+    pub fn extract_path_info<F, T>(path: &str, provided: Option<T>, extractor: F) -> Option<T>
     where
         F: Fn(&Path) -> Option<T>,
     {
         provided.or_else(|| extractor(Path::new(path)))
     }
 
-    fn basename(path: &str, provided_basename: Option<String>) -> Option<String> {
+    pub fn basename(path: &str, provided_basename: Option<String>) -> Option<String> {
         Self::extract_path_info(path, provided_basename, |p| {
             p.file_name()
                 .and_then(|name| name.to_str().map(String::from))
         })
     }
 
-    fn nameroot(path: &str, provided_nameroot: Option<String>) -> Option<String> {
+    pub fn nameroot(path: &str, provided_nameroot: Option<String>) -> Option<String> {
         Self::extract_path_info(path, provided_nameroot, |p| {
             p.file_stem()
                 .and_then(|stem| stem.to_str().map(String::from))
         })
     }
 
-    fn nameext(path: &str, provided_nameext: Option<String>) -> Option<String> {
+    pub fn nameext(path: &str, provided_nameext: Option<String>) -> Option<String> {
         Self::extract_path_info(path, provided_nameext, |p| {
             p.extension().and_then(|ext| ext.to_str().map(String::from))
         })
     }
 
-    fn size(path: &str, provided_size: Option<u64>) -> Option<u64> {
+    pub fn size(path: &str, provided_size: Option<u64>) -> Option<u64> {
         provided_size.or_else(|| fs::metadata(path).ok().map(|m| m.len()))
     }
 
-    fn checksum(path: &str, provided_checksum: Option<String>) -> Option<String> {
+    pub fn checksum(path: &str, provided_checksum: Option<String>) -> Option<String> {
         provided_checksum.or_else(|| Self::calculate_checksum(path).ok())
-    }
-}
-
-impl<'de> Deserialize<'de> for CwlFile {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        #[derive(Deserialize)]
-        struct Helper {
-            location: String,
-            #[serde(default)]
-            basename: Option<String>,
-            #[serde(default)]
-            nameroot: Option<String>,
-            #[serde(default)]
-            nameext: Option<String>,
-            #[serde(default)]
-            size: Option<u64>,
-            #[serde(default)]
-            checksum: Option<String>,
-        }
-
-        let helper = Helper::deserialize(deserializer)?;
-        let path = &helper.location;
-
-        Ok(Self {
-            location: helper.location.clone(),
-            basename: Self::basename(path, helper.basename),
-            nameroot: Self::nameroot(path, helper.nameroot),
-            nameext: Self::nameext(path, helper.nameext),
-            size: Self::size(path, helper.size),
-            checksum: Self::checksum(path, helper.checksum),
-        })
     }
 }
 
