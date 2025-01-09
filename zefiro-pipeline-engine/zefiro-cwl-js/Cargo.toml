@@ -2,7 +2,7 @@
 name = "zefiro-cwl-js"
 version = "0.1.0"
 description = """
-"Engine to execute JavaScript expressions in CWL used in `zefiro`.
+Engine to execute JavaScript expressions in CWL used in `zefiro`.
 """
 authors = [
   "Nikita Syzrantsev <syzrantsev.n@gmail.com>"

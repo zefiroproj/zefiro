@@ -2,7 +2,7 @@
 name = "zefiro-cwl-parser"
 version = "0.1.0"
 description = """
-"The Common Workflow Language (CWL) object model that used in `zefiro`.
+The Common Workflow Language (CWL) object model that used in `zefiro`.
 """
 authors = [
   "Nikita Syzrantsev <syzrantsev.n@gmail.com>"
