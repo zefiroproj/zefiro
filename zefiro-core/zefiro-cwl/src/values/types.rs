@@ -37,9 +37,10 @@ impl CwlFile {
     }
 
     pub fn calculate_checksum(path: &str) -> io::Result<String> {
-        let mut file = fs::File::open(path)?;
+        let file = fs::File::open(path)?;
+        let mut reader = io::BufReader::new(file);
         let mut hasher = Sha1::new();
-        io::copy(&mut file, &mut hasher)?;
+        io::copy(&mut reader, &mut hasher)?;
         Ok(format!("{:x}", hasher.finalize()))
     }
 
@@ -70,8 +71,8 @@ impl CwlFile {
         })
     }
 
-    pub fn size(path: &str, provided_size: Option<u64>) -> Option<u64> {
-        provided_size.or_else(|| fs::metadata(path).ok().map(|m| m.len()))
+    pub fn size(path: &str, provided_size: Option<u64>) -> io::Result<Option<u64>> {
+        Ok(provided_size.or_else(|| fs::metadata(path).ok().map(|m| m.len())))
     }
 
     pub fn checksum(path: &str, provided_checksum: Option<String>) -> Option<String> {

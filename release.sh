@@ -36,11 +36,11 @@ export GIT_CLIFF_TEMPLATE="\
 		- {% if commit.breaking %}(breaking) {% endif %}{{ commit.message | upper_first }} ({{ commit.id | truncate(length=7, end=\"\") }})\
 	{% endfor %}
 	{% endfor %}"
-if [ ! -f "test_data/detailed.toml" ]; then
-	echo "Error: test_data/detailed.toml not found"
+if [ ! -f "examples/detailed.toml" ]; then
+	echo "Error: examples/detailed.toml not found"
 	exit 1
 fi
-changelog=$(git cliff --config test_data/detailed.toml --unreleased --strip all)
+changelog=$(git cliff --config examples/detailed.toml --unreleased --strip all)
 
 # create a signed tag
 git -c user.name="zefiro" \

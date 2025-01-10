@@ -86,3 +86,27 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 ### How to execute JavaScript expressions?
+
+```rust
+use zefiro_cwl::JsExecutor;
+use serde_json::json;
+
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+  let cwl_inputs = json!({
+      "in_fastq": {
+          "class": "File",
+          "location": "/path/to/input.fastq",
+          "size": 1024 * 1024 * 512
+      }
+  });
+  let cwl_self = json!([{ "location": "/path/to/output.fastq" }]);
+  let js_script = "inputs.in_fastq.size / (1024 * 1024) * 2;";
+  
+  // Parse input values from file
+  let js_executor = JsExecutor::new(&cwl_inputs, &cwl_self);
+  js_executor?.run(js_script);
+
+  Ok(())
+}
+```
