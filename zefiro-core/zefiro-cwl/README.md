@@ -1,4 +1,4 @@
-# zefiro-cwl-parser
+# zefiro-cwl
 
 A Rust library for parsing and working with Common Workflow Language (CWL) documents.
 
@@ -13,14 +13,14 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-zefiro-cwl-parser = "0.1.0"
+zefiro-cwl = "0.0.0-pre"
 ```
 
 
 ### How to parse CWL Schema document?
 
 ```rust
-use zefiro_cwl_parser::CwlSchema;
+use zefiro_cwl::CwlSchema;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
   // Parse from file
@@ -65,7 +65,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 ### How to parse CWL Values document?
 
 ```rust
-use zefiro_cwl_parser::CwlValues;
+use zefiro_cwl::CwlValues;
 
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {

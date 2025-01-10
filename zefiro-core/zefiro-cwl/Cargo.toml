@@ -1,16 +1,14 @@
 [package]
-name = "zefiro-cwl-parser"
-version = "0.1.0"
+name = "zefiro-cwl"
+version = "0.0.0-pre"
 description = """
 The Common Workflow Language (CWL) object model that used in `zefiro`.
 """
-authors = [
-  "Nikita Syzrantsev <syzrantsev.n@gmail.com>"
-]
+authors = ["The Zefiroproj Authors"]
 categories = ["Serialization", "Deserialization", "Parsing"]
 keywords = ["CWL", "CommandLineTool", "Workflow"]
 edition = "2021"
-homepage = "https://github.com/zefiroproj/zefiro/zefiro-core/zefiro-cwl-parser"
+homepage = "https://github.com/zefiroproj/zefiro/zefiro-core/zefiro-cwl"
 license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/zefiroproj/zefiro"
@@ -18,7 +16,9 @@ rust-version = "1.83.0"
 
 [dependencies]
 anyhow = "1.0.95"
+deno_core = "0.330.0"
 serde = { version = "1.0.216", features = ["derive"] }
+serde_json = "1.0.135"
 serde_with = "3.12.0"
 serde_yaml = "0.9.34"
 sha1 = "0.10.6"

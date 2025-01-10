@@ -25,7 +25,7 @@ impl CwlSchema {
     /// Deserializes YAML `file` containing CWL values into CwlSchema structure.
     ///
     /// ```
-    /// use zefiro_cwl_parser::schema::document::CwlSchema;
+    /// use zefiro_cwl::schema::document::CwlSchema;
     ///
     /// let yaml_file = "test_data/cwl/clt-step-schema.yml";
     ///
@@ -61,7 +61,7 @@ impl CwlSchema {
     ///
     /// ```
     /// use serde_yaml::Value;
-    /// use zefiro_cwl_parser::schema::document::CwlSchema;
+    /// use zefiro_cwl::schema::document::CwlSchema;
     ///
     /// let yaml_str = r#"
     /// cwlVersion: v1.2
@@ -106,7 +106,7 @@ impl CwlSchema {
 
     /// Serializes CwlSchema structure and writes it into `file`.
     /// ```
-    /// use zefiro_cwl_parser::schema::document::CwlSchema;
+    /// use zefiro_cwl::schema::document::CwlSchema;
     /// use std::fs::File;
     /// use std::io::BufWriter;
     ///
