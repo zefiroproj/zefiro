@@ -28,8 +28,8 @@ impl CwlValues {
     /// Deserializes YAML `file` containing CWL values into CwlValues structure.
     ///
     /// ```
-    /// use zefiro_cwl_parser::values::document::CwlValues;
-    /// let yaml_file = "examples/data/clt-step-values.yml";
+    /// use zefiro_cwl::values::document::CwlValues;
+    /// let yaml_file = "test_data/cwl/clt-step-values.yml";
     /// let values = CwlValues::from_path(yaml_file).expect("Failed to deserialize CWL values document");
     /// ```
     pub fn from_path(path: &str) -> Result<Self, Error> {
@@ -49,7 +49,7 @@ impl CwlValues {
     /// Deserializes YAML `string` containing CWL values into CwlValues structure.
     ///
     /// ```
-    /// use zefiro_cwl_parser::values::document::CwlValues;
+    /// use zefiro_cwl::values::document::CwlValues;
     ///
     /// let yaml_input = r#"
     /// in_file:
@@ -78,7 +78,7 @@ impl CwlValues {
     /// Serializes CwlValues structure and writes it into `file`.
     ///
     /// ```
-    /// use zefiro_cwl_parser::values::document::CwlValues;
+    /// use zefiro_cwl::values::document::CwlValues;
     /// use std::io::BufWriter;
     ///
     /// let yaml_input = r#"
@@ -105,13 +105,13 @@ mod tests {
     use std::io::BufWriter;
 
     #[rstest]
-    #[case("examples/data/clt-step-values.yml")]
+    #[case("test_data/cwl/clt-step-values.yml")]
     fn test_cwlvalues_from_path(#[case] file_path: &str) {
         CwlValues::from_path(file_path).expect("Failed to deserialize CWL values document");
     }
 
     #[rstest]
-    #[case("examples/data/clt-step-values.yml")]
+    #[case("test_data/cwl/clt-step-values.yml")]
     fn test_cwlvalues_to_yaml(#[case] file_path: &str) {
         let values = CwlValues::from_path(file_path).expect("Failed to deserialize CWL values");
         let temp_file = tempfile::NamedTempFile::new().unwrap();

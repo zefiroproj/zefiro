@@ -1,5 +1,5 @@
 [package]
 name = "zefiro-core"
-version = "0.1.0"
+version = "0.0.0-pre"
 edition = "2021"
 rust-version = "1.83.0"

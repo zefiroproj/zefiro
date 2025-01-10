@@ -1,5 +1,5 @@
-use crate::schema::requirements::{CommandLineToolRequirement, SUPPORTED_CWL_VERSIONS};
-use crate::schema::types::{Any, CwlSchemaType, Documentation};
+use crate::schema::requirements::{CommandLineToolRequirement, MINIMAL_CWL_VERSION};
+use crate::schema::types::{Any, CwlSchemaType, Documentation, CLT_CWL_CLASS};
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 
@@ -29,11 +29,11 @@ pub struct CommandLineTool {
 
 impl CommandLineTool {
     fn default_cwl_version() -> String {
-        SUPPORTED_CWL_VERSIONS[0].to_string()
+        MINIMAL_CWL_VERSION.to_string()
     }
 
     fn default_class() -> String {
-        "CommandLineTool".to_string()
+        CLT_CWL_CLASS.to_string()
     }
 }
 
@@ -48,7 +48,7 @@ pub struct CommandInputParameter {
     pub r#type: CwlSchemaType,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub input_binding: Option<CommandLineBinding>,
+    pub input_binding: Option<InputBinding>,
 
     pub default: Option<Any>,
 }
@@ -72,7 +72,7 @@ pub struct CommandOutputParameter {
 #[skip_serializing_none]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct CommandLineBinding {
+pub struct InputBinding {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub position: Option<u32>,
 

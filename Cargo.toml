@@ -1,12 +1,12 @@
 [package]
 name = "zefiro"
-version = "0.1.0"
+version = "0.0.0-pre"
 edition = "2021"
 
 [workspace]
 members = [
     "zefiro-cli",
     "zefiro-core",
-    "zefiro-core/zefiro-cwl-parser",
+    "zefiro-core/zefiro-cwl",
     "zefiro-ui"
 ]

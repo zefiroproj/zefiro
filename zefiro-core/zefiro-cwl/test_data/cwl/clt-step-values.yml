@@ -1,0 +1,4 @@
+in_file:
+  class: File
+  location: 'test_data/inputs/file.txt'
+out_file: 'test_data/inputs/output.txt'

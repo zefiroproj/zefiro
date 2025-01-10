@@ -1,4 +1,0 @@
-in_file:
-  class: File
-  location: '{{ inputLocation }}/output/input-{{ readgroup }}.txt'
-out_file: 'output.txt'

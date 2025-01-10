@@ -3,5 +3,7 @@
 
 # Zefiro - fast, scalable and simple engine to manage workflows
 
+⚠️ This project is a Work In Progress, and is very far from being suitable for use ⚠️
+
 ## License
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fzefiroproj%2Fzefiro.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fzefiroproj%2Fzefiro?ref=badge_large)

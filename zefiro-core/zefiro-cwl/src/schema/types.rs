@@ -3,6 +3,9 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_yaml::Value as YValue;
 
+pub const WF_CWL_CLASS: &str = "Workflow";
+pub const CLT_CWL_CLASS: &str = "CommandLineTool";
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(untagged, rename_all = "camelCase")]
 pub enum Any {
