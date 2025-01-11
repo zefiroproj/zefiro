@@ -1,6 +1,6 @@
 use anyhow::Error;
 use serde_json::Value;
-use tera::{Tera, Context};
+use tera::{Context, Tera};
 
 pub struct TemplateRender {
     content: Value,
