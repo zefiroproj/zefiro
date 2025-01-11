@@ -16,10 +16,11 @@ impl TemplateRender {
 
     pub fn render(&self) -> Result<String, Error> {
         let mut context = Context::new();
-        if let Some(object) = self.content.as_object() {
-            for (key, value) in object {
-                context.insert(key, value);
-            }
+        let object = self.content.as_object().ok_or_else(|| {
+            anyhow::anyhow!("Content must be a JSON object, got: {}", self.content)
+        })?;
+        for (key, value) in object {
+            context.insert(key, value);
         }
         let result = self.tera.render("template", &context)?;
 
