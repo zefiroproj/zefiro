@@ -1,5 +1,5 @@
-pub mod js;
 #[doc = include_str!("../README.md")]
+pub mod js;
 pub mod schema;
 pub mod template;
 pub mod values;
