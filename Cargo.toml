@@ -2,6 +2,7 @@
 members = [
     "crates/zefiro-cwl",
     "crates/zefiro-kube",
+    "crates/zefiro-queue",
 ]
 resolver = "2"
 
