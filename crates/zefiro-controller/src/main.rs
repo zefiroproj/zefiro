@@ -3,8 +3,8 @@ use kube::{Api, Client, ResourceExt};
 use kube::api::PostParams;
 use tokio::time::{Duration, sleep};
 
-mod models;
-use crate::models::pod::PodBuilder;
+mod pod;
+use crate::pod::PodBuilder;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
