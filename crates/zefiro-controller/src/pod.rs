@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 use k8s_openapi::{
     api::core::v1::{
-        Container, ContainerPort, HostPathVolumeSource, Pod, PodSpec, ResourceRequirements, Volume
+        Container, ContainerPort, HostPathVolumeSource, Pod, PodSpec, ResourceRequirements, Volume, VolumeMount
     },
     apimachinery::pkg::api::resource::Quantity
 };
@@ -37,9 +37,11 @@ impl PodBuilder {
             container_args,
             resources_limits,
             resources_requests,
+            "/inputs",
+            "inputs"
         );
 
-        let volumes = vec![Self::create_host_path_volume("inputs", "/inputs", "Directory")];
+        let volumes = vec![Self::create_host_path_volume("inputs", "/inputs", Some("Directory"))];
 
         Self {
             pod_name: Some(pod_name.to_string()),
@@ -53,16 +55,22 @@ impl PodBuilder {
         max_ram: Option<u32>,
         max_disk: Option<u32>,
     ) -> Option<BTreeMap<String, Quantity>> {
-        if let (Some(cpu), Some(ram), Some(disk)) = (max_cpu, max_ram, max_disk) {
-            Some(BTreeMap::from([
-                ("memory".to_string(), Quantity(format!("{}M", ram))),
-                ("cpu".to_string(), Quantity(cpu.to_string())),
-                ("ephemeral-storage".to_string(), Quantity(format!("{}M", disk))),
-            ]))
-        } else {
-            None
+        let mut resource_limits = BTreeMap::new();
+        if let Some(ram) = max_ram {
+            resource_limits.insert("memory".to_string(), Quantity(ram.to_string()));
         }
-    }
+        if let Some(cpu) = max_cpu {
+            resource_limits.insert("cpu".to_string(), Quantity(cpu.to_string()));
+        }
+        if let Some(disk) = max_disk {
+            resource_limits.insert("ephemeral-storage".to_string(), Quantity(disk.to_string()));
+        }
+        if resource_limits.is_empty() {
+            None
+        } else {
+            Some(resource_limits)
+        }
+    }    
 
     fn build_resource_requests(
         min_cpu: u32,
@@ -83,6 +91,8 @@ impl PodBuilder {
         args: Vec<String>,
         limits: Option<BTreeMap<String, Quantity>>,
         requests: BTreeMap<String, Quantity>,
+        mount_path: &str,
+        mount_name: &str
     ) -> Container {
         Container {
             name: name.to_string(),
@@ -98,16 +108,21 @@ impl PodBuilder {
                 requests: Some(requests),
                 ..Default::default()
             }),
+            volume_mounts: Some(vec![VolumeMount {
+                mount_path: mount_path.to_string(),
+                name: mount_name.to_string(),
+                ..Default::default()
+            }]),
             ..Default::default()
         }
     }
 
-    fn create_host_path_volume(name: &str, path: &str, volume_type: &str) -> Volume {
+    fn create_host_path_volume(name: &str, path: &str, volume_type: Option<&str>) -> Volume {
         Volume {
             name: name.to_string(),
             host_path: Some(HostPathVolumeSource {
                 path: path.to_string(),
-                type_: Some(volume_type.to_string()),
+                type_: volume_type.map(|t| t.to_string()),
             }),
             ..Default::default()
         }

@@ -1,7 +1,7 @@
 [workspace]
 members = [
     "crates/zefiro-cwl",
-    "crates/zefiro-controller",
+    "crates/zefiro-controller", "crates/zefiro-api",
 ]
 resolver = "2"
 
