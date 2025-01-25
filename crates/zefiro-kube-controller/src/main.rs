@@ -1,21 +1,27 @@
+use k8s_openapi::api::batch::v1::Job;
 use k8s_openapi::api::core::v1::Pod;
 use kube::{Api, Client, ResourceExt};
 use kube::api::PostParams;
+use job::JobPriority;
+use resources::Resources;
 use tokio::time::{Duration, sleep};
 
-mod pod;
-use crate::pod::PodBuilder;
+mod resources;
+mod job;
+use crate::job::JobBuilder;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Initialize the Kubernetes client
     let client = Client::try_default().await?;
-    let pods: Api<Pod> = Api::default_namespaced(client);
+    let jobs: Api<Job> = Api::default_namespaced(client);
 
-    let pod_name = "vidjil";
-    let pod = PodBuilder::new(
-        pod_name,
-        pod_name,
+    let job_name = "vidjil";
+    let min_resources = Resources::new(2.0, 1024, 1024);
+    let max_resources = Some(Resources::new(8.0, 10000, 1024));
+    let job = JobBuilder::new(
+        job_name,
+        job_name,
         "vidjil:latest",
         80,
         vec![
@@ -23,45 +29,43 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             "--out-fasta=/inputs/output.fasta.gz".to_string(),
             "--vdj-ref=/inputs/vidjil.germline.only_human.tar.gz".to_string()
         ],
-        1,
-        4000,
-        4000,
-        None,
-        None,
-        None
+        min_resources,
+        max_resources,
+        JobPriority::Lowest,
+        120
     ).create();
-    // Create the Pod
-    let pod = pods.create(&PostParams::default(), &pod).await?;
-    println!("Created pod: {}", pod.name_any());
+
+    let job = jobs.create(&PostParams::default(), &job).await?;
+    println!("Created job: {}", job.name_any());
 
     // Wait for the Pod to be ready
     let timeout = Duration::from_secs(60);
     let start = std::time::Instant::now();
-    loop {
-        let pod = pods.get(pod_name).await?;
-        let status = pod.status.as_ref().expect("Pod status should be available");
-        let Some(phase) = &status.phase else {
-            if start.elapsed() > timeout {
-                return Err("Timed out waiting for pod to be ready".into());
-            }
-            sleep(Duration::from_secs(1)).await;
-            continue;
-        };
+    // loop {
+    //     let job = jobs.get(job_name).await?;
+    //     let status = job.status.as_ref().expect("Pod status should be available");
+    //     let Some(phase) = &status.status else {
+    //         if start.elapsed() > timeout {
+    //             return Err("Timed out waiting for pod to be ready".into());
+    //         }
+    //         sleep(Duration::from_secs(1)).await;
+    //         continue;
+    //     };
 
-        if phase == "Running" {
-            println!("Pod is running");
-            break;
-        }
+    //     if phase == "Running" {
+    //         println!("Pod is running");
+    //         break;
+    //     }
 
-        if start.elapsed() > timeout {
-            return Err("Timed out waiting for pod to be ready".into());
-        }
-        sleep(Duration::from_secs(1)).await;
-    }
+    //     if start.elapsed() > timeout {
+    //         return Err("Timed out waiting for pod to be ready".into());
+    //     }
+    //     sleep(Duration::from_secs(1)).await;
+    // }
 
-    // Fetch logs
-    let logs = pods.logs(pod_name, &Default::default()).await?;
-    println!("Pod logs:\n{}", logs);
+    // // Fetch logs
+    // let logs = jobs.logs(job_name, &Default::default()).await?;
+    // println!("Pod logs:\n{}", logs);
 
     Ok(())
 }
