@@ -1,7 +1,7 @@
 [workspace]
 members = [
     "crates/zefiro-cwl",
-    "crates/zefiro-kube-controller", "crates/zefiro-api",
+    "crates/zefiro-kube-service", "crates/zefiro-api",
 ]
 resolver = "2"
 
@@ -16,4 +16,4 @@ tokio-stream = { version = "0.1.17", features = ["net"] }
 tokio-util = { version = "0.7.13", features = ["io"] }
 rstest = "0.24.0"
 log = "0.4.25"
-async-nats = "0.38.0"
+async-nats = { version = "0.38.0", features = ["service"] }
