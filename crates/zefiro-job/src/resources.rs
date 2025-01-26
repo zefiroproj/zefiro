@@ -1,7 +1,9 @@
 use std::collections::BTreeMap;
 
 use k8s_openapi::apimachinery::pkg::api::resource::Quantity;
+use serde::{Deserialize, Serialize};
 
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Resources {
     cpus: f64,
     ram: u32,

@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 use k8s_openapi::api::{batch::v1::{Job, JobSpec}, core::v1::{
-        Container, ContainerPort, HostPathVolumeSource, PodSpec, PodTemplateSpec, ResourceRequirements, Volume, VolumeMount
+        Container, HostPathVolumeSource, PodSpec, PodTemplateSpec, ResourceRequirements, Volume, VolumeMount
     }
 };
 use kube::api::ObjectMeta;
