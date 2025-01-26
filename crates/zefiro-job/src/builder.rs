@@ -14,7 +14,6 @@ pub struct JobBuilder {
     volumes: Vec<Volume>,
     priority: JobPriority,
     time_limit: usize,
-    retries: usize
 }
 
 impl JobBuilder {
@@ -22,7 +21,6 @@ impl JobBuilder {
         pod_name: &str,
         container_name: &str,
         image_uri: &str,
-        container_port: i32,
         container_args: Vec<String>,
         min_resources: Resources,
         max_resources: Option<Resources>,
@@ -32,7 +30,6 @@ impl JobBuilder {
         let container = Self::create_container(
             container_name,
             image_uri,
-            container_port,
             container_args,
             max_resources,
             min_resources,
@@ -47,15 +44,13 @@ impl JobBuilder {
             container,
             volumes,
             priority,
-            time_limit,
-            retries: 0
+            time_limit
         }
     }
 
     fn create_container(
         name: &str,
         image: &str,
-        port: i32,
         args: Vec<String>,
         limits: Option<Resources>,
         requests: Resources,
@@ -65,10 +60,6 @@ impl JobBuilder {
         Container {
             name: name.to_string(),
             image: Some(image.to_string()),
-            ports: Some(vec![ContainerPort {
-                container_port: port,
-                ..Default::default()
-            }]),
             image_pull_policy: Some("Never".to_string()),
             args: Some(args),
             resources: Some(ResourceRequirements {
@@ -118,7 +109,7 @@ impl JobBuilder {
             spec: Some(JobSpec {
                 template: self.create_pod_template(),
                 active_deadline_seconds: Some(self.time_limit as i64),
-                backoff_limit: Some(self.retries as i32),
+                backoff_limit: Some(0),
                 ttl_seconds_after_finished: Some(120),
                 ..Default::default()
                 

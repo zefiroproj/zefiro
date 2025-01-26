@@ -1,7 +1,7 @@
 [workspace]
 members = [
     "crates/zefiro-cwl",
-    "crates/zefiro-kube", "crates/zefiro-api",
+    "crates/zefiro-job", "crates/zefiro-api",
 ]
 resolver = "2"
 

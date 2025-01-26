@@ -1,1 +1,0 @@
-# zefiro-kube-service

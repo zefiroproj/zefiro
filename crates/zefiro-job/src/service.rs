@@ -69,14 +69,13 @@ impl KubeService {
             job_name,
             job_name,
             "vidjil:latest",
-            80,
             vec![
                 "--in-fastq=/inputs/in_R12.fastq.gz".to_string(),
                 "--out-fasta=/inputs/output.fasta.gz".to_string(),
                 "--vdj-ref=/inputs/vidjil.germline.only_human.tar.gz".to_string(),
             ],
-            Resources::new(2.0, 1024, 1024), // Минимальные ресурсы
-            Some(Resources::new(8.0, 10000, 1024)), // Максимальные ресурсы
+            Resources::new(2.0, 1024, 1024),
+            Some(Resources::new(8.0, 10000, 1024)),
             JobPriority::Lowest,
             120,
         )
