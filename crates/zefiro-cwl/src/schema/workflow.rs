@@ -8,6 +8,9 @@ use petgraph::graph::DiGraph;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 
+const LOCAL_INPUT_SEPARATOR: &str = "/";
+const GLOBAL_INPUT_SEPARATOR: &str = "__";
+
 /// This defines the schema of the CWL Workflow Description document.
 /// See: https://www.commonwl.org/v1.2/Workflow.html
 #[skip_serializing_none]
@@ -55,7 +58,9 @@ impl Workflow {
                 for input in &step.r#in {
                     if let Some(source) = &input.source {
                         for src in source.sources() {
-                            if let Some(&source_node) = nodes.get(src.as_str()) {
+                            if let Some(&source_node) = nodes.get(
+                                src.split(LOCAL_INPUT_SEPARATOR).next().expect("Failed to get step id from source")
+                            ) {
                                 graph.add_edge(source_node, *target, "depends_on");
                             }
                         }
@@ -63,7 +68,7 @@ impl Workflow {
                 }
             }
         }
-
+        println!("{:?}", graph);
         graph
     }
     

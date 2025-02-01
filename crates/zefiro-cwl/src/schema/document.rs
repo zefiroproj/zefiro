@@ -186,11 +186,12 @@ mod tests {
     }
 
     #[rstest]
-    #[case("test_data/cwl/wf-schema.yml")]
-    fn test_workflow_is_dag(#[case] file_path: &str) {
+    #[case("test_data/cwl/wf-schema.yml", true)]
+    #[case("test_data/cwl/wf-cycled-schema.yml", false)]
+    fn test_workflow_is_dag(#[case] file_path: &str, #[case] expected: bool) {
         if let CwlSchema::Workflow(wf) = CwlSchema::from_path(file_path).expect("Failed to deserialize CWL schema") {
             let graph = wf.to_graph();
-            assert_eq!(true, Workflow::is_dag(graph));
+            assert_eq!(expected, Workflow::is_dag(graph));
         }
     }
 }
