@@ -7,3 +7,4 @@ edition = "2021"
 petgraph = { workspace = true }
 uuid = { workspace = true }
 tokio = { workspace = true }
+zefiro-cwl = { version = "0.0.0-pre", path = "../zefiro-cwl" }

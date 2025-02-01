@@ -56,7 +56,7 @@ impl Workflow {
             if let Some(target) = nodes.get(step.id.as_str()) {
                 for input in &step.r#in {
                     if let Some(source) = &input.source {
-                        for src in source.sources() {
+                        for src in source.to_vec() {
                             if let Some(&source_node) = nodes.get(
                                 src.split(LOCAL_INPUT_SEPARATOR).next().expect("Failed to parse source step id")
                             ) {
@@ -67,7 +67,7 @@ impl Workflow {
                 }
             }
         }
-        println!("{:?}", graph);
+
         graph
     }
     

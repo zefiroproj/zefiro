@@ -70,7 +70,7 @@ pub enum Source {
 }
 
 impl Source {
-    pub fn sources(&self) -> Vec<String> {
+    pub fn to_vec(&self) -> Vec<String> {
         match self {
             Self::SingleSource(src) => vec![src.clone()],
             Self::MultiSources(sources) => sources.clone(),
