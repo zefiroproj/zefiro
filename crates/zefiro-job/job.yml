@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vidjil
+spec:
+  ttlSecondsAfterFinished: 0
+  template:
+    spec:
+      containers:
+        - name: vidjil
+          image: vidjil:latest
+          ports:
+            - containerPort: 80
+          imagePullPolicy: Never
+          args:
+            - "--in-fastq=/inputs/in_R12.fastq.gz"
+            - "--out-fasta=/inputs/output.fasta.gz"
+            - "--vdj-ref=/inputs/vidjil.germline.only_human.tar.gz"
+          volumeMounts:
+            - name: inputs
+              mountPath: /inputs
+      volumes:
+        - name: inputs
+          hostPath:
+            path: /inputs
+            type: Directory
+      restartPolicy: Never

@@ -1,22 +1,17 @@
-# zefiro-job
-
-## Message request structure
-
-```json5
 {
     "job_id": "vidjil-123",
     "image": "vidjil:latest",
     "min_resources": {
-        "cpus": 1,
-        "ram": 1024,
+        "cpus": 4,
+        "ram": 8000,
         "disk": 1024
     },
     "max_resources": {
-        "cpus": 1,
-        "ram": 1024,
+        "cpus": 10,
+        "ram": 10000,
         "disk": 1024
     },
-    "time_limit": 120,
+    "time_limit": 360,
     "args": [
         "--in-fastq=/inputs/in_R12.fastq.gz",
         "--out-fasta=/outputs/output.fasta.gz",
@@ -24,8 +19,3 @@
     ],
     "priority": "medium"
 }
-```
-
-```bash
-cat inputs.json | nats req kube.get
-```

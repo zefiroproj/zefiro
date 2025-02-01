@@ -4,15 +4,15 @@ use k8s_openapi::apimachinery::pkg::api::resource::Quantity;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Resources {
+pub struct JobResources {
     cpus: f64,
     ram: u32,
     disk: u32
 }
 
-impl Resources {
+impl JobResources {
     pub fn new(cpus: f64, ram: u32, disk: u32) -> Self {
-        Resources { cpus, ram, disk }
+        JobResources { cpus, ram, disk }
     }
     
     pub fn to_dict(&self) -> BTreeMap<String, Quantity> {
