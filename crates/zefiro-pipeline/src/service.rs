@@ -9,15 +9,15 @@ use tokio_stream::StreamExt;
 
 use crate::{builder::JobBuilder, message::Message};
 
-const SERVICE_NAME: &str = "zefiro-job";
+const SERVICE_NAME: &str = "zefiro-pipeline";
 const SERVICE_VERSION: &str = "1.0.0";
 
-pub struct KubeService {
+pub struct PipelineService {
     nats: async_nats::Client,
     k8s: Api<Job>,
 }
 
-impl KubeService {
+impl PipelineService {
     pub async fn new(namespace: &str) -> Result<Self> {
         let k8s_client = Client::try_default().await?;
         let k8s_api: Api<Job> = Api::namespaced(k8s_client, namespace);

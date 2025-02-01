@@ -1,6 +1,10 @@
+use std::collections::HashMap;
+
 use crate::schema::command_line_tool::CommandLineTool;
 use crate::schema::requirements::{WorkflowRequirement, MINIMAL_CWL_VERSION};
 use crate::schema::types::{Any, CwlSchemaType, Documentation, Scatter, Source, WF_CWL_CLASS};
+use petgraph::algo::is_cyclic_directed;
+use petgraph::graph::DiGraph;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 
@@ -32,6 +36,37 @@ impl Workflow {
     fn default_class() -> String {
         WF_CWL_CLASS.to_string()
     }
+
+    /// Checks if the workflow forms a Directed Acyclic Graph (DAG).
+    pub fn is_dag(graph: DiGraph<&str, &str>) -> bool {
+        !is_cyclic_directed(&graph)
+    }
+
+    /// Converts the workflow into a directed graph.
+    pub fn to_graph(&self) -> DiGraph<&str, &str> {
+        let mut graph = DiGraph::new();
+
+        let nodes: HashMap<_, _> = self.steps.iter()
+            .map(|step| (step.id.as_str(), graph.add_node(step.id.as_str())))
+            .collect();
+    
+        for step in &self.steps {
+            if let Some(target) = nodes.get(step.id.as_str()) {
+                for input in &step.r#in {
+                    if let Some(source) = &input.source {
+                        for src in source.sources() {
+                            if let Some(&source_node) = nodes.get(src.as_str()) {
+                                graph.add_edge(source_node, *target, "depends_on");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        graph
+    }
+    
 }
 
 /// Represents an input parameter for a `Workflow`.
@@ -75,7 +110,7 @@ pub struct WorkflowStep {
     pub r#in: Vec<WorkflowStepInput>,
     pub out: Vec<WorkflowStepOutput>,
     pub run: CommandLineTool,
-    pub id: Option<String>,
+    pub id: String,
     pub label: Option<String>,
     pub doc: Option<Documentation>,
     pub scatter: Option<Scatter>,

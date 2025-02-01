@@ -24,7 +24,7 @@ use zefiro_cwl::CwlSchema;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
   // Parse from file
-  let schema = CwlSchema::from_path("test_data/cwl/clt-step-schema.yml").unwrap();
+  let schema = CwlSchema::from_path("test_data/cwl/clt-schema.yml").unwrap();
 
   // Parse from string
   let yaml_str = r#"
@@ -70,7 +70,7 @@ use zefiro_cwl::CwlValues;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
   // Parse input values from file
-  let values = CwlValues::from_path("test_data/cwl/clt-step-values.yml").unwrap();
+  let values = CwlValues::from_path("test_data/cwl/clt-values.yml").unwrap();
 
   // Create values from string
   let yaml_input = r#"

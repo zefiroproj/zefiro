@@ -1,0 +1,6 @@
+step1__in_file:
+  class: File
+  location: '{{ inputLocation }}/test_data/inputs/file.txt'
+step1__out_file: step1.txt
+step1__output_location_subdir: test_data/outputs
+step2__out_file: step2.txt

@@ -68,3 +68,12 @@ pub enum Source {
     SingleSource(String),
     MultiSources(Vec<String>),
 }
+
+impl Source {
+    pub fn sources(&self) -> Vec<String> {
+        match self {
+            Self::SingleSource(src) => vec![src.clone()],
+            Self::MultiSources(sources) => sources.clone(),
+        }
+    }
+}

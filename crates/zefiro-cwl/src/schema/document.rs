@@ -27,7 +27,7 @@ impl CwlSchema {
     /// ```
     /// use zefiro_cwl::schema::document::CwlSchema;
     ///
-    /// let yaml_file = "test_data/cwl/clt-step-schema.yml";
+    /// let yaml_file = "test_data/cwl/clt-schema.yml";
     ///
     /// let values = CwlSchema::from_path(yaml_file).expect("Failed to deserialize CWL values document");
     /// ```
@@ -110,7 +110,7 @@ impl CwlSchema {
     /// use std::fs::File;
     /// use std::io::BufWriter;
     ///
-    /// let yaml_file = "test_data/cwl/clt-step-schema.yml";
+    /// let yaml_file = "test_data/cwl/clt-schema.yml";
     /// let schema = CwlSchema::from_path(yaml_file).expect("Failed to serialize CWL schema document");
     /// let mut tmpfile = tempfile::tempfile().unwrap();
     /// let mut writer = BufWriter::new(tmpfile);
@@ -137,15 +137,15 @@ mod tests {
     use std::io::{Error, ErrorKind, Write};
 
     #[rstest]
-    #[case("test_data/cwl/clt-step-schema.yml")]
-    #[case("test_data/cwl/wf-step-schema.yml")]
+    #[case("test_data/cwl/clt-schema.yml")]
+    #[case("test_data/cwl/wf-schema.yml")]
     fn test_cwlschema_from_path(#[case] file_path: &str) {
         CwlSchema::from_path(file_path).expect("Failed to deserialize CWL schema document");
     }
 
     #[rstest]
-    #[case("test_data/cwl/clt-step-schema.yml")]
-    #[case("test_data/cwl/wf-step-schema.yml")]
+    #[case("test_data/cwl/clt-schema.yml")]
+    #[case("test_data/cwl/wf-schema.yml")]
     fn test_cwlschema_to_yaml(#[case] file_path: &str) {
         let values = CwlSchema::from_path(file_path).expect("Failed to deserialize CWL schema");
         let temp_file = tempfile::NamedTempFile::new().unwrap();
@@ -183,5 +183,14 @@ mod tests {
     fn test_wf_to_yaml_write_error() {
         let schema = CwlSchema::Workflow(Workflow::default());
         assert!(schema.to_yaml(FailingWriter).is_err());
+    }
+
+    #[rstest]
+    #[case("test_data/cwl/wf-schema.yml")]
+    fn test_workflow_is_dag(#[case] file_path: &str) {
+        if let CwlSchema::Workflow(wf) = CwlSchema::from_path(file_path).expect("Failed to deserialize CWL schema") {
+            let graph = wf.to_graph();
+            assert_eq!(true, Workflow::is_dag(graph));
+        }
     }
 }

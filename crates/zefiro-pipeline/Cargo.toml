@@ -1,7 +1,9 @@
 [package]
 name = "zefiro-pipeline"
-version = "0.1.0"
+version = "0.0.0-pre"
 edition = "2021"
 
 [dependencies]
 petgraph = { workspace = true }
+uuid = { workspace = true }
+tokio = { workspace = true }

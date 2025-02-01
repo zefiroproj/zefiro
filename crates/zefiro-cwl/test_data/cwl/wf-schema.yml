@@ -1,0 +1,107 @@
+class: Workflow
+cwlVersion: v1.2
+id: wf
+inputs:
+  - id: step1__in_file
+    type: File
+  - id: step1__out_file
+    type: string
+  - id: step1__output_location_subdir
+    type: string
+  - id: step2__out_file
+    type: string
+outputs:
+  - id: step1__out_file
+    type: File
+    outputSource: step1/out_file
+  - id: step2__out_file
+    type: File
+    outputSource: step2/out_file
+requirements:
+  - class: InlineJavascriptRequirement
+  - class: ScatterFeatureRequirement
+steps:
+  - id: step1
+    in:
+      - id: in_file
+        source: step1__in_file
+      - id: out_file
+        source: step1__out_file
+      - id: output_location_subdir
+        source: step1__output_location_subdir
+    out:
+      - id: out_file
+    run:
+      cwlVersion: v1.2
+      class: CommandLineTool
+      id: step1
+      inputs:
+        - id: in_file
+          type: File
+          inputBinding:
+            prefix: --in-file
+        - id: out_file
+          type: string
+          default: output.txt
+          inputBinding:
+            prefix: --out-file
+        - id: output_location_subdir
+          type: string
+          default: output/
+      outputs:
+        - id: out_file
+          type: File
+          outputBinding:
+            glob: $(inputs.out_file)
+            outputEval: ${self[0].location += inputs.output_location_subdir; return self[0]}
+      requirements:
+        - class: DockerRequirement
+          dockerPull: step1-image-uri:1.0
+        - class: ResourceRequirement
+          coresMin: 2
+          outdirMin: 1000
+          ramMin: 1024
+        - class: InlineJavascriptRequirement
+        - class: ToolTimeLimit
+          timelimit: $(60*60*1)
+  - id: step2
+    in:
+      - id: in_file
+        source: step1/out_file
+      - id: out_file
+        source: step2__out_file
+    out:
+      - id: out_file
+    run:
+      cwlVersion: v1.2
+      class: CommandLineTool
+      id: step2
+      inputs:
+        - id: in_file
+          type: File
+          inputBinding:
+            prefix: --in-file
+        - id: out_file
+          type: string
+          default: output.txt
+          inputBinding:
+            prefix: --out-file
+        - id: output_location_subdir
+          type: string
+          default: output/
+      outputs:
+        - id: out_file
+          type: File
+          outputBinding:
+            glob: $(inputs.out_file)
+            outputEval: ${self[0].location += inputs.output_location_subdir; return self[0]}
+      requirements:
+        - class: DockerRequirement
+          dockerPull: step2-image-uri:1.0
+        - class: ResourceRequirement
+          coresMin: 2
+          outdirMin: 1000
+          ramMin: 1024
+        - class: InlineJavascriptRequirement
+        - class: ToolTimeLimit
+          timelimit: $(60*60*1)
