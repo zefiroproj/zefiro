@@ -9,7 +9,6 @@ use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 
 const LOCAL_INPUT_SEPARATOR: &str = "/";
-const GLOBAL_INPUT_SEPARATOR: &str = "__";
 
 /// This defines the schema of the CWL Workflow Description document.
 /// See: https://www.commonwl.org/v1.2/Workflow.html
@@ -59,7 +58,7 @@ impl Workflow {
                     if let Some(source) = &input.source {
                         for src in source.sources() {
                             if let Some(&source_node) = nodes.get(
-                                src.split(LOCAL_INPUT_SEPARATOR).next().expect("Failed to get step id from source")
+                                src.split(LOCAL_INPUT_SEPARATOR).next().expect("Failed to parse source step id")
                             ) {
                                 graph.add_edge(source_node, *target, "depends_on");
                             }
