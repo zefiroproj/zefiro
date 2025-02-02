@@ -5,5 +5,5 @@ enum JobStatus {
     Failing,
     Stopped,
     Failed,
-    Done
+    Done,
 }

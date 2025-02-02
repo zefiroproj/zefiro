@@ -48,17 +48,21 @@ impl Workflow {
     pub fn to_graph(&self) -> DiGraph<&str, &str> {
         let mut graph = DiGraph::new();
 
-        let nodes: HashMap<_, _> = self.steps.iter()
+        let nodes: HashMap<_, _> = self
+            .steps
+            .iter()
             .map(|step| (step.id.as_str(), graph.add_node(step.id.as_str())))
             .collect();
-    
+
         for step in &self.steps {
             if let Some(target) = nodes.get(step.id.as_str()) {
                 for input in &step.r#in {
                     if let Some(source) = &input.source {
                         for src in source.to_vec() {
                             if let Some(&source_node) = nodes.get(
-                                src.split(LOCAL_INPUT_SEPARATOR).next().expect("Failed to parse source step id")
+                                src.split(LOCAL_INPUT_SEPARATOR)
+                                    .next()
+                                    .expect("Failed to parse source step id"),
                             ) {
                                 graph.add_edge(source_node, *target, "depends_on");
                             }
@@ -70,7 +74,6 @@ impl Workflow {
 
         graph
     }
-    
 }
 
 /// Represents an input parameter for a `Workflow`.
