@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 
-pub const MINIMAL_CWL_VERSION: &str = "v1.2";
+pub const MINIMAL_CWL_VERSION: f32 = 1.2; // Value from the cwlVersion field
 
 const CPU_NUM_DEFAULT: u32 = 1;
 const RAM_SIZE_IN_MB_DEFAULT: u32 = 1024;

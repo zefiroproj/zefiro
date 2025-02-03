@@ -3,30 +3,42 @@ use std::collections::HashMap;
 use crate::schema::command_line_tool::CommandLineTool;
 use crate::schema::requirements::{WorkflowRequirement, MINIMAL_CWL_VERSION};
 use crate::schema::types::{Any, CwlSchemaType, Documentation, Scatter, Source, WF_CWL_CLASS};
+use crate::schema::validate;
 use petgraph::algo::is_cyclic_directed;
 use petgraph::graph::DiGraph;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
+use validator::Validate;
 
 const LOCAL_INPUT_SEPARATOR: &str = "/";
 
 /// This defines the schema of the CWL Workflow Description document.
 /// See: https://www.commonwl.org/v1.2/Workflow.html
 #[skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, Serialize, Default)]
+#[derive(Clone, Debug, Validate, Deserialize, Serialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct Workflow {
+    #[validate(custom(function = "validate::validate_cwl_version"))]
     #[serde(default = "Workflow::default_cwl_version")]
     pub cwl_version: String,
+
+    #[validate(custom(function = "validate::validate_cwl_class"))]
     #[serde(default = "Workflow::default_class")]
     pub class: String,
+
     pub doc: Option<Documentation>,
+
     #[serde(default)]
     pub id: String,
+
     pub label: Option<String>,
+
     pub inputs: Vec<WorkflowInputParameter>,
+
     pub outputs: Vec<WorkflowOutputParameter>,
+
     pub steps: Vec<WorkflowStep>,
+
     pub requirements: Vec<WorkflowRequirement>,
 }
 

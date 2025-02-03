@@ -1,3 +1,9 @@
+use std::fmt;
+
+use serde::{Deserialize, Serialize};
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
 pub enum JobPriority {
     Lowest,
     Low,
@@ -6,15 +12,8 @@ pub enum JobPriority {
     Highest,
 }
 
-impl JobPriority {
-    pub fn to_string(&self) -> String {
-        let priority = match self {
-            Self::Lowest => "lowest",
-            Self::Low => "low",
-            Self::Medium => "medium",
-            Self::High => "high",
-            Self::Highest => "highest",
-        };
-        priority.to_string()
+impl fmt::Display for JobPriority {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?}", self).map(|_| ())
     }
 }

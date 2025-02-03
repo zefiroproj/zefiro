@@ -1,35 +1,46 @@
 use crate::schema::requirements::{CommandLineToolRequirement, MINIMAL_CWL_VERSION};
 use crate::schema::types::{Any, CwlSchemaType, Documentation, CLT_CWL_CLASS};
+use crate::schema::validate;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
+use validator::Validate;
 
 /// This defines the schema of the CWL Command Line Tool Description document.
 /// See: https://www.commonwl.org/v1.2/CommandLineTool.html
 #[skip_serializing_none]
-#[derive(Clone, Debug, Deserialize, Serialize, Default)]
+#[derive(Clone, Debug, Validate, Deserialize, Serialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct CommandLineTool {
+    #[validate(custom(function = "validate::validate_cwl_version"))]
     #[serde(default = "CommandLineTool::default_cwl_version")]
     pub cwl_version: String,
+
+    #[validate(custom(function = "validate::validate_cwl_class"))]
     #[serde(default = "CommandLineTool::default_class")]
     pub class: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub doc: Option<Documentation>,
+
     #[serde(default)]
     pub id: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     pub label: Option<String>,
+
     #[serde(default)]
     pub inputs: Vec<CommandInputParameter>,
+
     #[serde(default)]
     pub outputs: Vec<CommandOutputParameter>,
+
     #[serde(default)]
     pub requirements: Vec<CommandLineToolRequirement>,
 }
 
 impl CommandLineTool {
     fn default_cwl_version() -> String {
-        MINIMAL_CWL_VERSION.to_string()
+        format!("v{}", MINIMAL_CWL_VERSION)
     }
 
     fn default_class() -> String {

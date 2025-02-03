@@ -24,6 +24,8 @@ serde_yaml = { workspace = true }
 petgraph = { workspace = true }
 sha1 = "0.10.6"
 tera = "1.20.0"
+validator = { version = "0.20", features = ["derive"] }
+regex = "1.11.1"
 
 [dev-dependencies]
 rstest = { workspace = true }

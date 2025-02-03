@@ -8,6 +8,8 @@ use k8s_openapi::api::{
 };
 use kube::api::ObjectMeta;
 
+const INPUTS_VOLUME_NAME: &str = "inputs";
+const OUTPUTS_VOLUME_NAME: &str = "outputs";
 const HOST_PATH_TYPE: &str = "Directory";
 const RESTART_POLICY: &str = "Never";
 const TTL_SECONDS: usize = 300; // 5 min in seconds
@@ -86,8 +88,8 @@ impl JobBuilder {
                 ..Default::default()
             }),
             volume_mounts: Some(vec![
-                Self::create_volume_mount(inputs_dir, "inputs"),
-                Self::create_volume_mount(outputs_dir, "outputs"),
+                Self::create_volume_mount(inputs_dir, INPUTS_VOLUME_NAME),
+                Self::create_volume_mount(outputs_dir, OUTPUTS_VOLUME_NAME),
             ]),
             ..Default::default()
         }
@@ -109,8 +111,8 @@ impl JobBuilder {
             spec: Some(PodSpec {
                 containers: vec![self.container.clone()],
                 volumes: Some(vec![
-                    Self::create_volume("inputs", &self.inputs_dir),
-                    Self::create_volume("outputs", &self.outputs_dir),
+                    Self::create_volume(INPUTS_VOLUME_NAME, &self.inputs_dir),
+                    Self::create_volume(OUTPUTS_VOLUME_NAME, &self.outputs_dir),
                 ]),
                 priority_class_name: Some(self.priority.to_string()),
                 restart_policy: Some(RESTART_POLICY.to_string()),

@@ -1,10 +1,9 @@
 use crate::schema::{
     command_line_tool::CommandLineTool,
-    requirements::MINIMAL_CWL_VERSION,
     types::{CLT_CWL_CLASS, WF_CWL_CLASS},
     workflow::Workflow,
 };
-use anyhow::{bail, ensure, Error, Result};
+use anyhow::{bail, Error, Result};
 use serde::{Deserialize, Serialize};
 use serde_yaml::{self, Value};
 use std::{
@@ -38,15 +37,6 @@ impl CwlSchema {
 
     /// Deserializes a YAML Value into a CwlSchema instance.
     pub fn from_yaml(value: Value) -> Result<Self> {
-        let version = value
-            .get("cwlVersion")
-            .and_then(Value::as_str)
-            .ok_or_else(|| anyhow::anyhow!("Failed to determine CWL specification version."))?;
-        ensure!(
-            MINIMAL_CWL_VERSION == version,
-            "Unsupported CWL version: {version}"
-        );
-
         match value.get("class").and_then(Value::as_str) {
             Some(CLT_CWL_CLASS) => Ok(Self::CommandLineTool(serde_yaml::from_value(value)?)),
             Some(WF_CWL_CLASS) => Ok(Self::Workflow(serde_yaml::from_value(value)?)),
