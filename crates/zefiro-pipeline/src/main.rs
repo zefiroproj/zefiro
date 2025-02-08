@@ -1,23 +1,16 @@
-use petgraph::algo::toposort;
-use petgraph::visit::IntoNodeReferences;
+mod message;
+mod service;
 
-use zefiro_cwl::CwlSchema;
+use anyhow::Result;
 
-fn main() {
-    let file_path = "../zefiro-cwl/test_data/cwl/wf-schema.yml";
+const DEFAULT_K8S_NAMESPACE: &str = "default";
+const NATS_SERVICE_NAME: &str = "nats";
 
-    if let CwlSchema::Workflow(wf) =
-        CwlSchema::from_path(file_path).expect("Failed to deserialize CWL schema")
-    {
-        let graph = wf.to_graph();
-        let sorted = toposort(&graph, None).expect("Graph is not a DAG!");
-        println!("Topological order: {:?}", sorted);
+#[tokio::main]
+async fn main() -> Result<()> {
+    env_logger::init();
+    let kube_service = service::PipelineService::new(DEFAULT_K8S_NAMESPACE).await?;
+    kube_service.run().await?;
 
-        let entry_points: Vec<_> = graph
-            .node_references()
-            .filter(|(node, _)| graph.edges_directed(*node, petgraph::Incoming).count() == 0)
-            .map(|(_, name)| name)
-            .collect();
-        println!("Entry points: {:?}", entry_points);
-    }
+    Ok(())
 }

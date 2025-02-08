@@ -13,7 +13,7 @@ pub enum JobPriority {
 }
 
 impl fmt::Display for JobPriority {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{:?}", self).map(|_| ())
+    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        write!(formatter, "{}", format!("{:?}", self).to_lowercase())
     }
 }

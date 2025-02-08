@@ -1,7 +1,7 @@
-mod builder;
-mod priority;
-mod resources;
-mod status;
+pub mod builder;
+pub mod priority;
+pub mod resources;
+pub mod status;
 
 pub use crate::builder::JobBuilder;
 pub use crate::priority::JobPriority;
